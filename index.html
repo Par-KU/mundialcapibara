@@ -56,10 +56,6 @@
   .chip.t1{ border-color:var(--oro); } .chip.t1 .gol{ color:var(--oro); }
   .chip.t2{ border-color:var(--plata); }
   .chip.t3{ border-color:var(--bronce); }
-  @media (max-width:560px){
-    .chip{ font-size:8px; padding:7px 9px; gap:7px; }
-    .chip .nom{ font-size:9px; } .chip .gol{ font-size:13px; } .chip .pos{ font-size:12px; }
-  }
 
   /* ---------- CAMPO ---------- */
   .campo-wrap{ max-width:1100px; margin:0 auto; }
@@ -67,7 +63,7 @@
     box-shadow:0 0 0 4px var(--negro), 0 0 0 8px #444;
     /* franja exterior (banquillo / tierra) */
     background:repeating-linear-gradient(0deg, #243016 0 30px, #2b3a1b 30px 60px);
-    overflow:hidden; touch-action:none; }
+    overflow:hidden; }
   /* cancha de césped (ocupa la parte de arriba; abajo queda el banquillo) */
   .cancha{ position:absolute; top:0; left:0; right:0; height:82%;
     border:6px solid var(--lineas);
@@ -99,6 +95,7 @@
     filter:drop-shadow(0 1px 0 #000); }
 
   /* modo edición */
+  .campo.editando{ touch-action:none; }
   .campo.editando .ent{ pointer-events:auto; cursor:grab; }
   .campo.editando .ent .avatar{ outline:2px dashed rgba(255,255,255,.6); outline-offset:2px; }
   .ent.agarrado{ z-index:50; }
@@ -117,6 +114,51 @@
     30%{transform:scale(1);} 80%{opacity:1;} 100%{opacity:0; transform:scale(1.05);} }
 
   .pie{ max-width:1100px; margin:12px auto 0; font-size:7px; color:#555; }
+
+  /* ====================== RESPONSIVE ====================== */
+  /* Tablet */
+  @media (max-width:760px){
+    .ranking{ padding:10px; gap:7px; }
+    .chip{ font-size:9px; padding:8px 10px; gap:7px; }
+    .chip .pos{ font-size:13px; min-width:20px; }
+    .chip .nom{ font-size:10px; max-width:120px; }
+    .chip .gol{ font-size:14px; }
+  }
+  /* Celular */
+  @media (max-width:600px){
+    body{ padding:12px 8px 24px; }
+    /* header en columna: los botones bajan y no se enciman con el título */
+    .cabecera{ flex-direction:column; gap:8px; }
+    .acciones-top{ position:static; justify-content:center; }
+    .btn-top{ font-size:8px; padding:8px 11px; }
+    /* campo más alto y cómodo (se baja un poco con scroll) */
+    .campo{ height:min(72vh, 560px); min-height:440px; }
+    .circulo{ width:86px; height:86px; }
+    .area{ width:52px; height:120px; }
+    .etq-eq{ font-size:8px; top:6px; }
+    .etq-eq.a{ left:8px; } .etq-eq.b{ right:8px; }
+    /* fichas más pequeñas para que quepan los 7v7 + banca */
+    .ent{ width:60px; }
+    .avatar{ width:38px; height:38px; border-width:2px; font-size:11px; box-shadow:0 3px 0 rgba(0,0,0,.5); }
+    .enombre{ font-size:6px; margin-top:3px; }
+    .emarcador{ font-size:10px; margin-top:2px; }
+    .corona{ font-size:11px; }
+    .badge{ font-size:12px; right:14px; top:-2px; }
+    /* ranking compacto pero legible */
+    .ranking{ padding:8px; gap:6px; }
+    .chip{ font-size:8px; padding:6px 8px; gap:6px; }
+    .chip .pos{ font-size:12px; min-width:18px; }
+    .chip .nom{ font-size:9px; max-width:98px; }
+    .chip .gol{ font-size:12px; }
+    .gol-flash .quien{ font-size:9px; }
+  }
+  /* Celular angosto */
+  @media (max-width:400px){
+    .ent{ width:54px; }
+    .avatar{ width:33px; height:33px; }
+    .campo{ min-height:410px; }
+    .chip .nom{ max-width:84px; }
+  }
 </style>
 </head>
 <body>
