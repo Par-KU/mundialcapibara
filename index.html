@@ -64,10 +64,14 @@
   /* ---------- CAMPO ---------- */
   .campo-wrap{ max-width:1100px; margin:0 auto; }
   .campo{ position:relative; width:100%; height:min(66vh, 640px); min-height:360px;
-    border:6px solid var(--lineas);
     box-shadow:0 0 0 4px var(--negro), 0 0 0 8px #444;
-    background:repeating-linear-gradient(0deg, var(--cesped-a) 0 30px, var(--cesped-b) 30px 60px);
+    /* franja exterior (banquillo / tierra) */
+    background:repeating-linear-gradient(0deg, #243016 0 30px, #2b3a1b 30px 60px);
     overflow:hidden; touch-action:none; }
+  /* cancha de césped (ocupa la parte de arriba; abajo queda el banquillo) */
+  .cancha{ position:absolute; top:0; left:0; right:0; height:82%;
+    border:6px solid var(--lineas);
+    background:repeating-linear-gradient(0deg, var(--cesped-a) 0 30px, var(--cesped-b) 30px 60px); }
   /* mitades por equipo */
   .mitad{ position:absolute; top:0; bottom:0; width:50%; pointer-events:none; }
   .mitad.izq{ left:0; background:rgba(59,130,246,.10); }
@@ -129,14 +133,16 @@
 
   <div class="campo-wrap">
     <div class="campo" id="campo">
-      <div class="mitad izq"></div>
-      <div class="mitad der"></div>
-      <div class="etq-eq a">EQUIPO A</div>
-      <div class="etq-eq b">EQUIPO B</div>
-      <div class="linea-medio"></div>
-      <div class="circulo"></div>
-      <div class="area izq"></div>
-      <div class="area der"></div>
+      <div class="cancha">
+        <div class="mitad izq"></div>
+        <div class="mitad der"></div>
+        <div class="etq-eq a">EQUIPO A</div>
+        <div class="etq-eq b">EQUIPO B</div>
+        <div class="linea-medio"></div>
+        <div class="circulo"></div>
+        <div class="area izq"></div>
+        <div class="area der"></div>
+      </div>
 
       <div id="entidades"></div>
 
@@ -206,12 +212,12 @@ function calcularPosiciones(lista){
     else (g.equipo==="B"?G.jugB:G.jugA).push(g);
   });
   const pos={};
-  enZona(G.jugA, 8,44, 16,84, pos);
-  enZona(G.jugB, 56,92, 16,84, pos);
-  enZona(G.tecnico, 6,18, 6,12, pos, true);
-  enZona(G.camilla, 82,96, 88,94, pos, true);
-  enZona(G.banca, 18,82, 92,96, pos, true);
-  G.arbitro.forEach((g,i)=>{ pos[g.id]={x:50, y:42+i*8}; });
+  enZona(G.jugA, 8,44, 14,76, pos);
+  enZona(G.jugB, 56,92, 14,76, pos);
+  enZona(G.tecnico, 5,15, 88,93, pos, true);
+  enZona(G.camilla, 84,96, 88,93, pos, true);
+  enZona(G.banca, 30,72, 88,93, pos, true);
+  G.arbitro.forEach((g,i)=>{ pos[g.id]={x:50, y:38+i*7}; });
   return pos;
 }
 
