@@ -9,204 +9,114 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
   :root{
-    --negro:#0a0a12;
-    --panel:#12121f;
-    --panel2:#1a1a2e;
-    --cesped-a:#2f9e44;
-    --cesped-b:#37b24d;
-    --lineas:#f8f9fa;
-    --oro:#ffd43b;
-    --plata:#ced4da;
-    --bronce:#e8743b;
-    --rojo:#e8413f;
-    --azul:#3b82f6;
-    --verde-btn:#2f9e44;
-    --texto:#f1f3f5;
-    --sombra-pixel:#000;
+    --negro:#0a0a12; --panel:#12121f; --panel2:#1a1a2e;
+    --cesped-a:#2f9e44; --cesped-b:#37b24d; --lineas:#f8f9fa;
+    --oro:#ffd43b; --plata:#ced4da; --bronce:#e8743b;
+    --rojo:#e8413f; --azul:#3b82f6; --texto:#f1f3f5;
   }
-
   *{ box-sizing:border-box; margin:0; padding:0; }
-
   html,body{
-    background:var(--negro);
-    color:var(--texto);
-    font-family:'Press Start 2P', monospace;
-    text-align:center;
-    -webkit-font-smoothing:none;
-    image-rendering:pixelated;
+    background:var(--negro); color:var(--texto);
+    font-family:'Press Start 2P', monospace; text-align:center;
+    -webkit-font-smoothing:none; image-rendering:pixelated;
   }
-
   body{
-    padding:18px 12px 60px;
+    padding:14px 12px 28px;
     background:radial-gradient(circle at 50% -10%, #1b1b33 0%, var(--negro) 60%);
-    min-height:100vh;
-    position:relative;
-    overflow-x:hidden;
+    min-height:100vh; position:relative; overflow-x:hidden;
   }
-
-  /* scanlines CRT sutiles */
   body::after{
-    content:"";
-    position:fixed; inset:0; pointer-events:none;
-    background:repeating-linear-gradient(
-      to bottom,
-      rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px,
-      rgba(0,0,0,0.18) 3px, rgba(0,0,0,0) 4px);
-    z-index:9999; mix-blend-mode:multiply;
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:9999; mix-blend-mode:multiply;
+    background:repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0 2px, rgba(0,0,0,.18) 3px, rgba(0,0,0,0) 4px);
   }
 
-  /* ---------- MARQUESINA / TITULO ---------- */
-  .marquesina{
-    max-width:760px; margin:0 auto 22px;
-    background:var(--panel);
-    border:4px solid var(--lineas);
-    box-shadow:0 0 0 4px var(--negro), 0 0 0 8px #444, 0 10px 0 8px rgba(0,0,0,0.5);
-    padding:18px 14px 16px;
+  /* ---------- HEADER COMPACTO ---------- */
+  .cabecera{
+    max-width:1100px; margin:0 auto 12px; position:relative;
+    display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;
   }
-  .marquesina .sub{ font-size:8px; color:var(--cesped-b); letter-spacing:2px; margin-bottom:12px; }
   .titulo{
-    font-size:clamp(13px, 3.4vw, 24px); color:var(--oro); line-height:1.5;
-    text-shadow:3px 3px 0 var(--rojo), -1px -1px 0 var(--sombra-pixel);
+    font-size:clamp(12px, 2.6vw, 20px); color:var(--oro); line-height:1.4;
+    text-shadow:3px 3px 0 var(--rojo), -1px -1px 0 #000;
   }
   .titulo .bola{ animation:girar 2.4s steps(8) infinite; display:inline-block; }
   @keyframes girar{ to{ transform:rotate(360deg);} }
-  .barra-superior{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px; font-size:7px; }
-  .stat{ background:var(--panel2); border:2px solid #333; padding:7px 9px; color:#adb5bd; }
-  .stat b{ color:var(--oro); }
-
-  /* ---------- TABLERO ÚNICO ---------- */
-  .tablero{
-    max-width:760px; margin:0 auto;
-    background:var(--panel);
-    border:4px solid var(--lineas);
-    box-shadow:0 0 0 4px var(--negro), 0 0 0 8px #444, 0 10px 0 8px rgba(0,0,0,0.5);
-    padding:16px 14px;
+  .btn-admin{
+    position:absolute; right:0; top:0;
+    font-family:'Press Start 2P',monospace; font-size:7px; color:#fff; text-decoration:none;
+    background:#34406b; border:2px solid #4654a0; padding:7px 9px;
+    box-shadow:0 3px 0 rgba(0,0,0,.6);
   }
-  .cab-tabla{
-    display:grid; grid-template-columns:46px 1fr 58px auto;
-    align-items:center; gap:8px;
-    font-size:7px; color:#6c757d; letter-spacing:1px;
-    padding:0 10px 10px; text-align:left;
-    border-bottom:2px solid #2a2a44; margin-bottom:10px;
-  }
-  .cab-tabla .c-ven, .cab-tabla .c-acc{ text-align:center; }
 
-  .fila{
-    display:grid; grid-template-columns:46px 1fr 58px auto;
-    align-items:center; gap:8px;
-    background:var(--panel2); border:2px solid #2a2a44;
-    padding:9px 10px; margin-bottom:7px;
-    will-change:transform;
+  /* ---------- TABLERO COMPACTO (ranking horizontal) ---------- */
+  .ranking{
+    max-width:1100px; margin:0 auto 16px;
+    background:var(--panel); border:3px solid #444;
+    box-shadow:0 0 0 3px var(--negro), 0 6px 0 4px rgba(0,0,0,.4);
+    padding:10px;
+    display:flex; flex-wrap:wrap; gap:7px; justify-content:center; align-items:stretch;
   }
-  .fila.oro{ border-color:var(--oro); box-shadow:inset 0 0 0 1px rgba(255,212,59,.3), 0 0 12px rgba(255,212,59,.22); }
-  .fila.plata{ border-color:var(--plata); }
-  .fila.bronce{ border-color:var(--bronce); }
-
-  .pos{ font-size:14px; text-align:center; }
-  .fila .nombre{
-    font-size:8px; text-align:left; line-height:1.6; color:var(--texto);
-    outline:none; cursor:text; word-break:break-word;
-    border-bottom:2px dashed transparent;
+  .chip{
+    display:inline-flex; align-items:center; gap:6px;
+    background:var(--panel2); border:2px solid #2a2a44; padding:5px 8px; font-size:7px;
   }
-  .fila .nombre:hover, .fila .nombre:focus{ border-bottom-color:#444; }
-  .fila .ventas{ font-size:20px; color:#ff6b2c; text-shadow:2px 2px 0 var(--sombra-pixel); text-align:center; }
-  .fila.oro .ventas{ color:var(--oro); }
+  .chip .pos{ font-size:11px; min-width:16px; text-align:center; }
+  .chip .nom{ max-width:88px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .chip .gol{ font-size:12px; color:#ff6b2c; }
+  .chip.t1{ border-color:var(--oro); }   .chip.t1 .gol{ color:var(--oro); }
+  .chip.t2{ border-color:var(--plata); }
+  .chip.t3{ border-color:var(--bronce); }
 
-  .acciones{ display:flex; gap:5px; justify-content:center; }
-  button.pix{
-    font-family:'Press Start 2P', monospace; border:none; cursor:pointer; color:#fff;
-    box-shadow:0 4px 0 rgba(0,0,0,.6); transition:transform .05s, box-shadow .05s;
-  }
-  button.pix:active{ transform:translateY(3px); box-shadow:0 1px 0 rgba(0,0,0,.6); }
-  .btn-gol{ background:var(--verde-btn); padding:8px 9px; font-size:7px; }
-  .btn-gol:hover{ background:#37b24d; }
-  .btn-menos{ background:#495057; padding:8px 9px; font-size:8px; width:34px; }
-  .btn-menos:hover{ background:#5c636a; }
-
-  /* ---------- CAMPO (franjas HORIZONTALES) ---------- */
-  .campo-wrap{ max-width:760px; margin:30px auto 0; }
+  /* ---------- CAMPO GRANDE ---------- */
+  .campo-wrap{ max-width:1100px; margin:0 auto; }
   .campo{
-    position:relative; width:100%; height:300px;
+    position:relative; width:100%; height:min(64vh, 620px); min-height:340px;
     border:6px solid var(--lineas);
     box-shadow:0 0 0 4px var(--negro), 0 0 0 8px #444;
-    background:repeating-linear-gradient(
-      0deg,
-      var(--cesped-a) 0, var(--cesped-a) 26px,
-      var(--cesped-b) 26px, var(--cesped-b) 52px
-    );
+    background:repeating-linear-gradient(0deg,
+      var(--cesped-a) 0 30px, var(--cesped-b) 30px 60px);
     overflow:hidden;
   }
   .linea-medio{ position:absolute; left:50%; top:0; width:4px; height:100%; background:var(--lineas); transform:translateX(-50%); }
-  .circulo{
-    position:absolute; left:50%; top:50%; width:110px; height:110px;
-    border:4px solid var(--lineas); border-radius:50%; transform:translate(-50%,-50%);
-  }
-  .area{ position:absolute; top:50%; transform:translateY(-50%); width:70px; height:150px; border:4px solid var(--lineas); }
-  .area.izq{ left:0; border-left:none; }
-  .area.der{ right:0; border-right:none; }
-  .porteria{
-    position:absolute; right:6px; top:50%; transform:translateY(-50%);
-    width:26px; height:120px;
-    background:
-      repeating-linear-gradient(0deg, transparent 0 7px, rgba(255,255,255,.6) 7px 8px),
-      repeating-linear-gradient(90deg, transparent 0 7px, rgba(255,255,255,.6) 7px 8px);
-    border:4px solid var(--lineas); border-right:none;
-  }
+  .circulo{ position:absolute; left:50%; top:50%; width:120px; height:120px; border:4px solid var(--lineas); border-radius:50%; transform:translate(-50%,-50%); }
+  .area{ position:absolute; top:50%; transform:translateY(-50%); width:80px; height:170px; border:4px solid var(--lineas); }
+  .area.izq{ left:0; border-left:none; } .area.der{ right:0; border-right:none; }
 
-  /* === ZONA LIBRE PARA TUS GIFS === */
-  .assets-gif{ position:absolute; inset:0; pointer-events:none; }
-  .asset-gif{ position:absolute; image-rendering:pixelated; }
+  /* jugadores en el campo */
+  .jug{ position:absolute; transform:translate(-50%,-50%); text-align:center; pointer-events:none; }
+  .avatar{
+    margin:0 auto; border:3px solid #0a0a12; box-shadow:0 4px 0 rgba(0,0,0,.5);
+    display:flex; align-items:center; justify-content:center; color:#fff; overflow:hidden;
+    image-rendering:pixelated; background:#444; font-size:14px;
+  }
+  .avatar img{ width:100%; height:100%; object-fit:contain; image-rendering:pixelated; }
+  .jug.lider .avatar{ border-color:var(--oro); box-shadow:0 0 14px var(--oro), 0 4px 0 rgba(0,0,0,.5); }
+  .jnombre{ font-size:7px; margin-top:5px; white-space:nowrap;
+    text-shadow:1px 1px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000; }
+  .jmarcador{ font-size:13px; color:var(--oro); margin-top:3px; text-shadow:2px 2px 0 #000; }
+  .corona{ font-size:15px; line-height:1; margin-bottom:2px; }
 
+  /* festejo de gol */
   .gol-flash{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; pointer-events:none; }
-  .gol-flash.activo{ animation:flashgol 1.3s ease-out; }
-  .gol-flash .txt{ font-size:clamp(26px,7vw,56px); color:var(--oro); text-shadow:4px 4px 0 var(--rojo), -2px -2px 0 #000; }
-  .gol-flash .quien{ font-size:10px; color:#fff; margin-top:12px; text-shadow:2px 2px 0 #000; }
+  .gol-flash.activo{ animation:flashgol 1.4s ease-out; }
+  .gol-flash .txt{ font-size:clamp(30px,8vw,70px); color:var(--oro); text-shadow:4px 4px 0 var(--rojo), -2px -2px 0 #000; }
+  .gol-flash .quien{ font-size:11px; color:#fff; margin-top:12px; text-shadow:2px 2px 0 #000; }
   @keyframes flashgol{
-    0%{ opacity:0; transform:scale(.4); }
-    15%{ opacity:1; transform:scale(1.15); }
-    30%{ transform:scale(1); }
-    80%{ opacity:1; }
-    100%{ opacity:0; transform:scale(1.05); }
+    0%{opacity:0; transform:scale(.4);} 15%{opacity:1; transform:scale(1.15);}
+    30%{transform:scale(1);} 80%{opacity:1;} 100%{opacity:0; transform:scale(1.05);}
   }
 
-  /* ---------- PIE ---------- */
-  .pie{ max-width:760px; margin:22px auto 0; display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
-  .btn-reset{ background:#862e2e; padding:11px 14px; font-size:8px; }
-  .btn-reset:hover{ background:#a13232; }
-  .btn-sonido{ background:#34406b; padding:11px 14px; font-size:8px; }
-
-  /* ---------- RESPONSIVE ---------- */
-  @media (max-width:520px){
-    .cab-tabla, .fila{ grid-template-columns:34px 1fr 44px auto; gap:6px; }
-    .pos{ font-size:11px; }
-    .fila .ventas{ font-size:16px; }
-    .btn-gol{ font-size:6px; padding:7px 6px; }
-    .campo{ height:220px; }
-  }
-  @media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; } }
+  .pie{ max-width:1100px; margin:12px auto 0; font-size:7px; color:#555; }
 </style>
 </head>
 <body>
 
-  <div class="marquesina">
-    <div class="sub">★ LIGA DE GESTORES ★ TEMPORADA 2026 ★</div>
+  <div class="cabecera">
     <div class="titulo"><span class="bola">⚽</span> MARCADOR DE VENTAS <span class="bola">⚽</span></div>
-    <div class="barra-superior">
-      <div class="stat">GOLES TOTALES: <b id="statTotal">0</b></div>
-      <div class="stat">LÍDER: <b id="statLider">—</b></div>
-      <div class="stat">JUGADORES: <b id="statJug">15</b></div>
-    </div>
+    <a class="btn-admin" href="admin.html" target="_blank" rel="noopener">⚙ ADMIN</a>
   </div>
 
-  <div class="tablero">
-    <div class="cab-tabla">
-      <div class="c-pos">POS</div>
-      <div class="c-nom">GESTOR</div>
-      <div class="c-ven">VENTAS</div>
-      <div class="c-acc">ACCIÓN</div>
-    </div>
-    <div id="lista"></div>
-  </div>
+  <div class="ranking" id="ranking"></div>
 
   <div class="campo-wrap">
     <div class="campo" id="campo">
@@ -214,17 +124,12 @@
       <div class="circulo"></div>
       <div class="area izq"></div>
       <div class="area der"></div>
-      <div class="porteria"></div>
-
       <!-- ============================================================
-           ZONA PARA TUS GIFS / ASSETS PERSONALES
-           Pega aquí tus personajes animados. Ejemplo:
-           <img src="personaje1.gif" class="asset-gif" style="left:30px; bottom:20px; width:90px;">
-           <img src="portero.gif"    class="asset-gif" style="right:40px; bottom:60px; width:70px;">
-           Puedes poner los que quieras. (.asset-gif ya queda posicionado)
+           CAMPO LIBRE — aquí van tus GIFs (la "carrera").
+           Más adelante los personajes avanzarán según sus ventas.
+           Por ahora queda vacío a propósito.
            ============================================================ -->
-      <div class="assets-gif" id="assetsGif"></div>
-
+      <div id="jugadores"></div>
       <div class="gol-flash" id="golFlash">
         <div class="txt">¡GOOOL!</div>
         <div class="quien" id="golQuien"></div>
@@ -232,163 +137,102 @@
     </div>
   </div>
 
-  <div class="pie">
-    <button class="pix btn-sonido" id="btnSonido">🔊 SONIDO: ON</button>
-    <button class="pix btn-reset" onclick="reiniciar()">⟲ REINICIAR TEMPORADA</button>
-  </div>
+  <div class="pie">EN VIVO · controla los puntajes desde el panel ⚙ ADMIN · clic en la pantalla para activar el sonido</div>
 
 <script>
-/* ============================================================
-   MARCADOR DE VENTAS — estilo Kunio-kun / Mundial
-   Un solo tablero, gestores ordenados por ventas.
-   ============================================================ */
-
-const NUM_GESTORES = 15;
-const CLAVE = "marcadorVentasKunio_v2";
-
-let gestores = [];
-let sonidoOn = true;
-
-// ---- Persistencia (en GitHub Pages se conserva al recargar) ----
-function cargar(){
-  try{ const raw = localStorage.getItem(CLAVE); if(raw) gestores = JSON.parse(raw); }catch(e){}
-  if(!Array.isArray(gestores) || gestores.length !== NUM_GESTORES){
-    gestores = Array.from({length:NUM_GESTORES}, (_,i)=>({ nombre:"Gestor "+(i+1), goles:0 }));
-  }
+/* ================= CAPA DE DATOS (compartida con admin.html) ================= */
+const CLAVE = "marcadorVentas_v3";
+function dbDefault(){
+  const e={ seq:0, gestores:[] };
+  for(let i=1;i<=15;i++){ e.seq++; e.gestores.push({ id:e.seq, nombre:"Gestor "+i, goles:0, gif:"" }); }
+  return e;
 }
-function guardar(){ try{ localStorage.setItem(CLAVE, JSON.stringify(gestores)); }catch(e){} }
-
-// ---- Render con reordenamiento animado (FLIP) ----
-const $lista = document.getElementById("lista");
-
-function filaHTML(g, pos){
-  const clase = pos===0 ? "oro" : pos===1 ? "plata" : pos===2 ? "bronce" : "";
-  const insignia = pos===0 ? "🥇" : pos===1 ? "🥈" : pos===2 ? "🥉" : (pos+1);
-  return `
-    <div class="fila ${clase}" data-id="${g.id}">
-      <div class="pos">${insignia}</div>
-      <div class="nombre" contenteditable="true" spellcheck="false" data-i="${g.id}">${escapar(g.nombre)}</div>
-      <div class="ventas">${g.goles}</div>
-      <div class="acciones">
-        <button class="pix btn-gol" data-gol="${g.id}">+ VENTA</button>
-        <button class="pix btn-menos" data-menos="${g.id}">−</button>
-      </div>
-    </div>`;
+function dbCargar(){
+  let e=null;
+  try{ const raw=localStorage.getItem(CLAVE); if(raw) e=JSON.parse(raw); }catch(err){}
+  if(!e || !Array.isArray(e.gestores) || !e.gestores.length) e=dbDefault();
+  if(typeof e.seq!=="number") e.seq=e.gestores.reduce((m,g)=>Math.max(m,g.id||0),0);
+  e.gestores.forEach(g=>{ if(typeof g.goles!=="number")g.goles=0; if(typeof g.gif!=="string")g.gif=""; if(typeof g.nombre!=="string")g.nombre="Gestor"; });
+  return e;
 }
 
-function posicionesActuales(){
-  const map = {};
-  $lista.querySelectorAll(".fila").forEach(el=>{ map[el.dataset.id] = el.getBoundingClientRect().top; });
-  return map;
-}
-
-function render(animarOrden){
-  const prev = animarOrden ? posicionesActuales() : null;
-
-  const ranking = gestores.map((g,i)=>({ ...g, id:i }))
-    .sort((a,b)=> b.goles - a.goles || a.id - b.id);
-
-  $lista.innerHTML = ranking.map((g,pos)=> filaHTML(g,pos)).join("");
-
-  // Stats
-  const total = gestores.reduce((s,g)=>s+g.goles,0);
-  document.getElementById("statTotal").textContent = total;
-  document.getElementById("statJug").textContent = gestores.length;
-  document.getElementById("statLider").textContent = total>0 ? recortar(ranking[0].nombre) : "—";
-
-  // FLIP: animar el cambio de posición
-  if(prev){
-    const filas = $lista.querySelectorAll(".fila");
-    filas.forEach(el=>{
-      const oldTop = prev[el.dataset.id]; if(oldTop===undefined) return;
-      const dy = oldTop - el.getBoundingClientRect().top;
-      if(dy){ el.style.transition="none"; el.style.transform=`translateY(${dy}px)`; }
-    });
-    requestAnimationFrame(()=>{
-      filas.forEach(el=>{
-        el.style.transition="transform .45s cubic-bezier(.2,.7,.2,1)";
-        el.style.transform="";
-      });
-    });
-  }
-}
-
-function escapar(t){ return String(t).replace(/[&<>"]/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
-function recortar(t){ return t.length>10 ? t.slice(0,10)+"…" : t; }
-
-// ---- Acciones ----
-function sumarGol(i){ gestores[i].goles++; guardar(); render(true); animarGol(gestores[i].nombre); sonarGol(); }
-function restarGol(i){ if(gestores[i].goles>0){ gestores[i].goles--; guardar(); render(true); } }
-function reiniciar(){
-  if(confirm("¿Reiniciar todos los goles a 0? Los nombres se conservan.")){
-    gestores.forEach(g=>g.goles=0); guardar(); render(false);
-  }
-}
-
-$lista.addEventListener("click", e=>{
-  const gol = e.target.closest("[data-gol]");
-  const menos = e.target.closest("[data-menos]");
-  if(gol) sumarGol(+gol.dataset.gol);
-  if(menos) restarGol(+menos.dataset.menos);
-});
-$lista.addEventListener("blur", e=>{
-  if(e.target.classList.contains("nombre")){
-    const i = +e.target.dataset.i;
-    const txt = e.target.textContent.trim().replace(/\s+/g," ").slice(0,24);
-    gestores[i].nombre = txt || ("Gestor "+(i+1));
-    guardar(); render(false);
-  }
-}, true);
-$lista.addEventListener("keydown", e=>{
-  if(e.target.classList.contains("nombre") && e.key==="Enter"){ e.preventDefault(); e.target.blur(); }
-});
-
-// ---- Animación de gol (flash ¡GOOOL!) ----
+/* ================= RENDER ================= */
+const $ranking = document.getElementById("ranking");
 const $flash = document.getElementById("golFlash");
 const $quien = document.getElementById("golQuien");
 
-let animando = false;
+function esc(t){ return String(t).replace(/[&<>"]/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
+
+function render(estado){
+  const lista = estado.gestores;
+
+  // --- ranking horizontal (ordenado por ventas) ---
+  const orden = [...lista].sort((a,b)=> b.goles-a.goles || a.id-b.id);
+  $ranking.innerHTML = orden.map((g,i)=>{
+    const cls = i===0?"t1":i===1?"t2":i===2?"t3":"";
+    const ins = i===0?"🥇":i===1?"🥈":i===2?"🥉":(i+1);
+    return `<div class="chip ${cls}"><span class="pos">${ins}</span>
+              <span class="nom">${esc(g.nombre)}</span><span class="gol">${g.goles}</span></div>`;
+  }).join("");
+
+  // El campo se deja VACÍO a propósito: es el escenario para tus GIFs
+  // (la "carrera" donde avanzarán según sus ventas). No se dibuja nada aquí.
+}
+
+/* ================= SINCRONIZACIÓN EN VIVO ================= */
+let prevGoles = {};
+function snapshot(e){ const m={}; e.gestores.forEach(g=>m[g.id]=g.goles); return m; }
+
+function aplicar(detectarGol){
+  const estado = dbCargar();
+  render(estado);
+  if(detectarGol){
+    let anotador=null;
+    estado.gestores.forEach(g=>{ if(prevGoles[g.id]!==undefined && g.goles>prevGoles[g.id]) anotador=g; });
+    if(anotador){ animarGol(anotador.nombre); sonarGol(); }
+  }
+  prevGoles = snapshot(estado);
+}
+
+window.addEventListener("storage", e=>{ if(e.key===CLAVE) aplicar(true); });
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) aplicar(false); });
+window.addEventListener("focus", ()=> aplicar(false));
+window.addEventListener("resize", ()=> aplicar(false));
+
+/* ================= FESTEJO + SONIDO ================= */
+let animando=false;
 function animarGol(nombre){
-  if(animando) return; animando = true;
+  if(animando) return; animando=true;
   $quien.textContent = nombre.toUpperCase() + " ANOTA";
   $flash.classList.remove("activo"); void $flash.offsetWidth; $flash.classList.add("activo");
-  setTimeout(()=>{ animando = false; }, 1400);
+  setTimeout(()=>{ animando=false; }, 1500);
 }
 
-// ---- Sonido 8-bit ----
-let actx = null;
-function audioCtx(){ if(!actx){ try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } return actx; }
-function beep(freq,t0,dur,tipo="square",vol=0.18){
-  const ctx=audioCtx(); if(!ctx) return;
-  const osc=ctx.createOscillator(), gain=ctx.createGain();
-  osc.type=tipo; osc.frequency.value=freq;
-  gain.gain.setValueAtTime(vol, ctx.currentTime+t0);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+t0+dur);
-  osc.connect(gain); gain.connect(ctx.destination);
-  osc.start(ctx.currentTime+t0); osc.stop(ctx.currentTime+t0+dur);
+let actx=null, sonidoOn=true;
+function audioCtx(){ if(!actx){ try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } return actx; }
+function beep(f,t0,d,vol=0.18){
+  const c=audioCtx(); if(!c) return;
+  const o=c.createOscillator(), g=c.createGain();
+  o.type="square"; o.frequency.value=f;
+  g.gain.setValueAtTime(vol, c.currentTime+t0);
+  g.gain.exponentialRampToValueAtTime(0.001, c.currentTime+t0+d);
+  o.connect(g); g.connect(c.destination); o.start(c.currentTime+t0); o.stop(c.currentTime+t0+d);
 }
 function sonarGol(){
-  if(!sonidoOn) return; const ctx=audioCtx(); if(!ctx) return;
-  if(ctx.state==="suspended") ctx.resume();
+  if(!sonidoOn) return; const c=audioCtx(); if(!c) return;
+  if(c.state==="suspended") c.resume();
   beep(523,0,0.10); beep(659,0.10,0.10); beep(784,0.20,0.10); beep(1047,0.30,0.22);
   try{
-    const buf=ctx.createBuffer(1, ctx.sampleRate*0.5, ctx.sampleRate);
-    const d=buf.getChannelData(0);
+    const b=c.createBuffer(1,c.sampleRate*0.5,c.sampleRate), d=b.getChannelData(0);
     for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length);
-    const src=ctx.createBufferSource(); src.buffer=buf;
-    const g=ctx.createGain(); g.gain.value=0.06;
-    src.connect(g); g.connect(ctx.destination); src.start(ctx.currentTime+0.35);
+    const s=c.createBufferSource(); s.buffer=b; const g=c.createGain(); g.gain.value=0.06;
+    s.connect(g); g.connect(c.destination); s.start(c.currentTime+0.35);
   }catch(e){}
 }
-document.getElementById("btnSonido").addEventListener("click", e=>{
-  sonidoOn=!sonidoOn;
-  e.target.textContent = sonidoOn ? "🔊 SONIDO: ON" : "🔇 SONIDO: OFF";
-  if(sonidoOn){ const c=audioCtx(); if(c&&c.state==="suspended") c.resume(); }
-});
+document.addEventListener("click", ()=>{ const c=audioCtx(); if(c&&c.state==="suspended") c.resume(); });
 
-// ---- Init ----
-cargar();
-render(false);
+/* ================= INIT ================= */
+aplicar(false);
 </script>
 </body>
 </html>
