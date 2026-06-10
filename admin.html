@@ -3,52 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin · Mundial Capibara</title>
+<title>Admin · Marcador de Ventas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --negro:#0a0a12; --panel:#12121f; --panel2:#1a1a2e;
-    --oro:#ffd43b; --rojo:#e8413f; --azul:#3b82f6; --verde:#2f9e44; --texto:#f1f3f5;
-  }
+  :root{ --negro:#0a0a12; --panel:#12121f; --panel2:#1a1a2e;
+    --oro:#ffd43b; --rojo:#e8413f; --azul:#3b82f6; --verde:#2f9e44; --texto:#f1f3f5; }
   *{ box-sizing:border-box; margin:0; padding:0; }
-  html,body{
-    background:var(--negro); color:var(--texto);
-    font-family:'Press Start 2P', monospace; -webkit-font-smoothing:none; image-rendering:pixelated;
-  }
+  html,body{ background:var(--negro); color:var(--texto);
+    font-family:'Press Start 2P', monospace; -webkit-font-smoothing:none; image-rendering:pixelated; }
   body{ padding:18px 12px 60px; background:radial-gradient(circle at 50% -10%, #1b1b33 0%, var(--negro) 60%); min-height:100vh; }
-
   .cont{ max-width:720px; margin:0 auto; }
   .titulo{ text-align:center; color:var(--oro); font-size:clamp(13px,3vw,20px); line-height:1.5;
     text-shadow:3px 3px 0 var(--rojo), -1px -1px 0 #000; margin-bottom:6px; }
   .subt{ text-align:center; font-size:7px; color:#6c757d; letter-spacing:1px; margin-bottom:18px; }
 
   .barra{ display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:18px; }
-  button.pix, a.pix{
-    font-family:'Press Start 2P',monospace; font-size:7px; color:#fff; text-decoration:none;
+  button.pix, a.pix{ font-family:'Press Start 2P',monospace; font-size:7px; color:#fff; text-decoration:none;
     border:none; cursor:pointer; padding:10px 11px; box-shadow:0 4px 0 rgba(0,0,0,.6);
-    transition:transform .05s, box-shadow .05s; display:inline-block;
-  }
+    transition:transform .05s, box-shadow .05s; display:inline-block; }
   button.pix:active{ transform:translateY(3px); box-shadow:0 1px 0 rgba(0,0,0,.6); }
-  .b-add{ background:var(--verde); } .b-add:hover{ background:#37b24d; }
-  .b-tablero{ background:#34406b; }
-  .b-cero{ background:#7a5d18; }
-  .b-borrar{ background:#862e2e; }
+  .b-add{ background:var(--verde); } .b-tablero{ background:#34406b; }
+  .b-cero{ background:#7a5d18; } .b-borrar{ background:#862e2e; }
+  .b-pass{ background:#2f6b4d; } .b-salir{ background:#444; }
 
   .ag{ background:var(--panel2); border:2px solid #2a2a44; padding:12px; margin-bottom:10px; }
+  .ag.eqA{ border-left:6px solid #3b82f6; } .ag.eqB{ border-left:6px solid #e8413f; } .ag.eqN{ border-left:6px solid #ffd43b; }
   .ag .fila1{ display:flex; align-items:center; gap:8px; }
   .ag .idx{ font-size:13px; color:var(--oro); min-width:26px; text-align:center; }
-  input.pix{
-    font-family:'Press Start 2P',monospace; font-size:8px; color:#fff; background:#0d0d18;
-    border:2px solid #2a2a44; padding:8px; width:100%;
-  }
-  input.pix:focus{ border-color:var(--azul); outline:none; }
+  input.pix, select.sel{ font-family:'Press Start 2P',monospace; font-size:8px; color:#fff; background:#0d0d18;
+    border:2px solid #2a2a44; padding:8px; width:100%; }
+  input.pix:focus, select.sel:focus{ border-color:var(--azul); outline:none; }
   .nombre{ flex:1; }
   .del{ background:#5a2a2a; color:#fff; border:none; cursor:pointer; font-family:'Press Start 2P',monospace;
     font-size:9px; padding:8px 10px; box-shadow:0 3px 0 rgba(0,0,0,.6); }
   .del:active{ transform:translateY(3px); box-shadow:0 1px 0 rgba(0,0,0,.6); }
-
   .fila2{ display:flex; align-items:center; gap:10px; margin-top:10px; flex-wrap:wrap; }
   .puntaje{ display:flex; align-items:center; gap:6px; }
   .puntaje .et{ font-size:7px; color:#868e96; }
@@ -58,50 +48,81 @@
   .btn-mini{ font-family:'Press Start 2P',monospace; font-size:9px; color:#fff; border:none; cursor:pointer;
     padding:8px 11px; box-shadow:0 3px 0 rgba(0,0,0,.6); }
   .btn-mini:active{ transform:translateY(3px); box-shadow:0 1px 0 rgba(0,0,0,.6); }
-
-  .fila3{ margin-top:10px; }
-  .fila3 .et{ font-size:7px; color:#868e96; display:block; margin-bottom:5px; }
+  .fila3{ margin-top:10px; } .fila3 .et{ font-size:7px; color:#868e96; display:block; margin-bottom:5px; }
+  .fila4{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .fila4 .sel{ flex:1; min-width:130px; }
 
   .nota{ background:var(--panel); border:2px solid #2a2a44; padding:12px; font-size:7px; color:#adb5bd;
-    line-height:1.9; margin-top:20px; }
-  .nota b{ color:var(--oro); }
+    line-height:1.9; margin-top:20px; } .nota b{ color:var(--oro); }
   .guardado{ position:fixed; bottom:14px; left:50%; transform:translateX(-50%);
     background:var(--verde); color:#fff; font-size:8px; padding:9px 14px; box-shadow:0 4px 0 rgba(0,0,0,.6);
-    opacity:0; transition:opacity .2s; pointer-events:none; }
-  .guardado.ver{ opacity:1; }
+    opacity:0; transition:opacity .2s; pointer-events:none; } .guardado.ver{ opacity:1; }
+
+  /* bloqueo / login */
+  .lock{ position:fixed; inset:0; background:radial-gradient(circle at 50% 30%, #1b1b33 0%, #06060c 70%);
+    display:flex; align-items:center; justify-content:center; z-index:10000; padding:20px; }
+  .lock.oculto{ display:none; }
+  .lock .caja{ background:var(--panel); border:4px solid var(--oro); box-shadow:0 0 0 4px #000, 0 10px 0 6px rgba(0,0,0,.5);
+    padding:26px 22px; max-width:360px; width:100%; text-align:center; }
+  .lock .candado{ font-size:34px; }
+  .lock h1{ color:var(--oro); font-size:13px; margin:14px 0 6px; text-shadow:2px 2px 0 var(--rojo); }
+  .lock p{ font-size:7px; color:#868e96; line-height:1.9; margin-bottom:18px; }
+  .lock input{ font-family:'Press Start 2P',monospace; font-size:10px; color:#fff; background:#0d0d18;
+    border:2px solid #2a2a44; padding:11px; width:100%; text-align:center; letter-spacing:2px; }
+  .lock input:focus{ border-color:var(--azul); outline:none; }
+  .lock .entrar{ background:var(--verde); width:100%; margin-top:14px; padding:12px; font-size:9px; }
+  .lock .error{ color:var(--rojo); font-size:7px; min-height:12px; margin-top:12px; }
+  .cont.bloqueado{ display:none; }
 </style>
 </head>
 <body>
-<div class="cont">
+
+<!-- ===== BLOQUEO ===== -->
+<div class="lock" id="lock">
+  <div class="caja">
+    <div class="candado">🔒</div>
+    <h1>ACCESO ADMIN</h1>
+    <p>Ingresa la contraseña para gestionar el marcador.</p>
+    <input id="pass" type="password" placeholder="••••••••" autocomplete="off">
+    <button class="pix entrar" id="btnEntrar">ENTRAR</button>
+    <div class="error" id="errPass"></div>
+  </div>
+</div>
+
+<div class="cont bloqueado" id="panel">
   <div class="titulo">⚙ PANEL DE ADMIN</div>
-  <div class="subt">GESTIONA PUNTAJES · NOMBRES · GIFS · GESTORES</div>
+  <div class="subt">NOMBRE · VENTAS · GIF · ROL · EQUIPO</div>
 
   <div class="barra">
-    <button class="pix b-add" id="btnAdd">+ AGREGAR GESTOR</button>
-    <a class="pix b-tablero" href="index.html" target="_blank" rel="noopener">📺 ABRIR TABLERO</a>
+    <button class="pix b-add" id="btnAdd">+ AGREGAR</button>
+    <a class="pix b-tablero" href="index.html" target="_blank" rel="noopener">📺 TABLERO</a>
     <button class="pix b-cero" id="btnCero">⟲ PUNTAJES A 0</button>
-    <button class="pix b-borrar" id="btnBorrar">🗑 RESETEAR TODO</button>
+    <button class="pix b-borrar" id="btnBorrar">🗑 RESETEAR</button>
+    <button class="pix b-pass" id="btnPass">🔑 CLAVE</button>
+    <button class="pix b-salir" id="btnSalir">🚪 SALIR</button>
   </div>
 
   <div id="listaAdmin"></div>
 
   <div class="nota">
-    <b>¿Cómo se usa?</b><br>
-    1) Abre <b>📺 ABRIR TABLERO</b> en otra pestaña (o pantalla del mismo equipo).<br>
-    2) Cada <b>+ VENTA</b> aquí actualiza el tablero al instante y dispara el <b>¡GOOOL!</b>.<br>
-    3) En <b>GIF</b> pega la URL de tu personaje animado; aparecerá sobre el campo.<br>
-    <br>Nota: la sincronización en vivo funciona entre pestañas del <b>mismo navegador</b>. Para controlar desde otro celular/dispositivo en tiempo real, el siguiente paso sería conectarlo a Firebase.
+    <b>Tips:</b><br>
+    • <b>Rol</b>: jugador, árbitro 🟨, técnico 👔, en camilla 🩹 o banca 🪑.<br>
+    • <b>Equipo</b>: A (izquierda, azul) / B (derecha, rojo) / Neutral.<br>
+    • Las <b>posiciones</b> se ajustan en el tablero con el botón <b>📍 MOVER</b> (arrastrando).<br>
+    • Árbitro y técnico no entran al ranking de ventas.<br>
+    <br>La sincronización en vivo funciona entre pestañas del <b>mismo navegador</b>. Para otro dispositivo en tiempo real: Firebase.
   </div>
 </div>
 
 <div class="guardado" id="toast">GUARDADO ✓</div>
 
 <script>
-/* ================= CAPA DE DATOS (igual que index.html) ================= */
+/* ================= CAPA DE DATOS (idéntica a index.html) ================= */
 const CLAVE = "marcadorVentas_v3";
+const ROLES = ["jugador","arbitro","tecnico","camilla","banca"];
 function dbDefault(){
   const e={ seq:0, gestores:[] };
-  for(let i=1;i<=15;i++){ e.seq++; e.gestores.push({ id:e.seq, nombre:"Gestor "+i, goles:0, gif:"" }); }
+  for(let i=1;i<=14;i++){ e.seq++; e.gestores.push({ id:e.seq, nombre:"Gestor "+i, goles:0, gif:"", rol:"jugador", equipo:"", x:null, y:null }); }
   return e;
 }
 function dbCargar(){
@@ -109,24 +130,39 @@ function dbCargar(){
   try{ const raw=localStorage.getItem(CLAVE); if(raw) e=JSON.parse(raw); }catch(err){}
   if(!e || !Array.isArray(e.gestores) || !e.gestores.length) e=dbDefault();
   if(typeof e.seq!=="number") e.seq=e.gestores.reduce((m,g)=>Math.max(m,g.id||0),0);
-  e.gestores.forEach(g=>{ if(typeof g.goles!=="number")g.goles=0; if(typeof g.gif!=="string")g.gif=""; if(typeof g.nombre!=="string")g.nombre="Gestor"; });
+  e.gestores.forEach(g=>{
+    if(typeof g.goles!=="number")g.goles=0;
+    if(typeof g.gif!=="string")g.gif="";
+    if(typeof g.nombre!=="string")g.nombre="Gestor";
+    if(!ROLES.includes(g.rol)) g.rol="jugador";
+    if(!["A","B","N"].includes(g.equipo)) g.equipo="";
+    if(typeof g.x!=="number") g.x=null;
+    if(typeof g.y!=="number") g.y=null;
+  });
+  const jug=e.gestores.filter(g=>g.rol==="jugador");
+  const sin=jug.filter(g=>g.equipo!=="A"&&g.equipo!=="B");
+  if(jug.length && sin.length===jug.length){ jug.forEach((g,i)=> g.equipo = i<Math.ceil(jug.length/2)?"A":"B"); }
+  e.gestores.forEach(g=>{ if(!["A","B","N"].includes(g.equipo)) g.equipo = g.rol==="jugador"?"A":"N"; });
   return e;
 }
 function dbGuardar(e){ try{ localStorage.setItem(CLAVE, JSON.stringify(e)); }catch(err){} toast(); }
 
 /* ================= ESTADO / RENDER ================= */
 let estado = dbCargar();
-const $lista = document.getElementById("listaAdmin");
-const $toast = document.getElementById("toast");
-
+const $lista=document.getElementById("listaAdmin");
+const $toast=document.getElementById("toast");
 function esc(t){ return String(t).replace(/[&<>"]/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
+function selRol(r){ const o=[["jugador","Jugador"],["arbitro","Árbitro 🟨"],["tecnico","Técnico 👔"],["camilla","Camilla 🩹"],["banca","Banca 🪑"]];
+  return o.map(([v,t])=>`<option value="${v}" ${r===v?"selected":""}>${t}</option>`).join(""); }
+function selEq(e){ const o=[["A","Equipo A"],["B","Equipo B"],["N","Neutral"]];
+  return o.map(([v,t])=>`<option value="${v}" ${e===v?"selected":""}>${t}</option>`).join(""); }
 
 function render(){
   $lista.innerHTML = estado.gestores.map((g,i)=>`
-    <div class="ag" data-id="${g.id}">
+    <div class="ag eq${g.equipo}" data-id="${g.id}">
       <div class="fila1">
         <span class="idx">${i+1}</span>
-        <input class="pix nombre" type="text" value="${esc(g.nombre)}" data-campo="nombre" maxlength="24" placeholder="Nombre del gestor">
+        <input class="pix nombre" type="text" value="${esc(g.nombre)}" data-campo="nombre" maxlength="24" placeholder="Nombre">
         <button class="del" data-accion="del" title="Eliminar">✕</button>
       </div>
       <div class="fila2">
@@ -137,73 +173,94 @@ function render(){
           <button class="btn-mini mas" data-accion="mas">+ VENTA</button>
         </div>
       </div>
+      <div class="fila4">
+        <select class="sel" data-campo="rol">${selRol(g.rol)}</select>
+        <select class="sel" data-campo="equipo">${selEq(g.equipo)}</select>
+      </div>
       <div class="fila3">
         <span class="et">GIF DEL PERSONAJE (URL, opcional)</span>
         <input class="pix" type="text" value="${esc(g.gif)}" data-campo="gif" placeholder="https://...tu-personaje.gif">
       </div>
-    </div>
-  `).join("");
+    </div>`).join("");
 }
-
 function porId(id){ return estado.gestores.find(g=>g.id===id); }
 
 /* ================= EVENTOS ================= */
-// Cambios de texto / número (sin re-render para no perder el foco)
-$lista.addEventListener("input", e=>{
-  const card = e.target.closest(".ag"); if(!card) return;
-  const id = +card.dataset.id; const g = porId(id); if(!g) return;
-  const campo = e.target.dataset.campo;
-  if(campo==="nombre"){ g.nombre = e.target.value.slice(0,24); }
-  else if(campo==="gif"){ g.gif = e.target.value.trim(); }
-  else if(campo==="goles"){ g.goles = Math.max(0, parseInt(e.target.value)||0); }
+function aplicarCambio(e){
+  const card=e.target.closest(".ag"); if(!card) return;
+  const g=porId(+card.dataset.id); if(!g) return;
+  const campo=e.target.dataset.campo;
+  if(campo==="nombre"){ g.nombre=e.target.value.slice(0,24); }
+  else if(campo==="gif"){ g.gif=e.target.value.trim(); }
+  else if(campo==="goles"){ g.goles=Math.max(0, parseInt(e.target.value)||0); }
+  else if(campo==="rol"){ g.rol=e.target.value; card.className="ag eq"+g.equipo; }
+  else if(campo==="equipo"){ g.equipo=e.target.value; card.className="ag eq"+g.equipo; }
+  else return;
   dbGuardar(estado);
-});
+}
+$lista.addEventListener("input", aplicarCambio);
+$lista.addEventListener("change", aplicarCambio);
 
-// Botones + / − / eliminar
 $lista.addEventListener("click", e=>{
-  const btn = e.target.closest("[data-accion]"); if(!btn) return;
-  const card = e.target.closest(".ag"); const id = +card.dataset.id; const g = porId(id); if(!g) return;
-  const acc = btn.dataset.accion;
-  if(acc==="mas"){ g.goles++; card.querySelector('[data-campo="goles"]').value = g.goles; dbGuardar(estado); }
-  else if(acc==="menos"){ if(g.goles>0){ g.goles--; card.querySelector('[data-campo="goles"]').value = g.goles; dbGuardar(estado); } }
+  const btn=e.target.closest("[data-accion]"); if(!btn) return;
+  const card=e.target.closest(".ag"); const g=porId(+card.dataset.id); if(!g) return;
+  const acc=btn.dataset.accion;
+  if(acc==="mas"){ g.goles++; card.querySelector('[data-campo="goles"]').value=g.goles; dbGuardar(estado); }
+  else if(acc==="menos"){ if(g.goles>0){ g.goles--; card.querySelector('[data-campo="goles"]').value=g.goles; dbGuardar(estado); } }
   else if(acc==="del"){
     if(confirm("¿Eliminar a \""+g.nombre+"\"?")){
-      estado.gestores = estado.gestores.filter(x=>x.id!==id);
-      dbGuardar(estado); render();
+      estado.gestores=estado.gestores.filter(x=>x.id!==g.id); dbGuardar(estado); render();
     }
   }
 });
 
 document.getElementById("btnAdd").addEventListener("click", ()=>{
   estado.seq++;
-  estado.gestores.push({ id:estado.seq, nombre:"Gestor "+estado.seq, goles:0, gif:"" });
+  estado.gestores.push({ id:estado.seq, nombre:"Gestor "+estado.seq, goles:0, gif:"", rol:"jugador", equipo:"A", x:null, y:null });
   dbGuardar(estado); render();
-  window.scrollTo({ top: document.body.scrollHeight, behavior:"smooth" });
+  window.scrollTo({ top:document.body.scrollHeight, behavior:"smooth" });
 });
-
 document.getElementById("btnCero").addEventListener("click", ()=>{
   if(confirm("¿Poner todos los puntajes en 0? (los nombres se conservan)")){
     estado.gestores.forEach(g=>g.goles=0); dbGuardar(estado); render();
   }
 });
-
 document.getElementById("btnBorrar").addEventListener("click", ()=>{
-  if(confirm("¿Borrar todo y volver a 15 gestores en blanco?")){
-    estado = dbDefault(); dbGuardar(estado); render();
+  if(confirm("¿Borrar todo y volver a 14 jugadores en blanco?")){
+    estado=dbDefault(); dbGuardar(estado); render();
   }
 });
 
 let tToast=null;
-function toast(){
-  $toast.classList.add("ver");
-  clearTimeout(tToast);
-  tToast = setTimeout(()=> $toast.classList.remove("ver"), 900);
-}
-
-// Si se edita en otra pestaña, refrescamos
+function toast(){ $toast.classList.add("ver"); clearTimeout(tToast); tToast=setTimeout(()=>$toast.classList.remove("ver"),900); }
 window.addEventListener("storage", e=>{ if(e.key===CLAVE){ estado=dbCargar(); render(); } });
-
 render();
+
+/* ================= CONTRASEÑA ================= */
+/* Hash simple (para no dejar la clave en texto plano). Por defecto "parku2026".
+   Cámbiala con 🔑 CLAVE. */
+const HASH_DEFECTO="i7tv32";
+function hashPass(s){ let h=5381; for(let i=0;i<s.length;i++){ h=(((h<<5)+h) ^ s.charCodeAt(i))>>>0; } return h.toString(36); }
+function hashActual(){ return localStorage.getItem("mvAdminHash") || HASH_DEFECTO; }
+const $lock=document.getElementById("lock"), $panel=document.getElementById("panel");
+const $pass=document.getElementById("pass"), $err=document.getElementById("errPass");
+function mostrarPanel(){ $lock.classList.add("oculto"); $panel.classList.remove("bloqueado"); }
+function mostrarLock(){ $panel.classList.add("bloqueado"); $lock.classList.remove("oculto"); $pass.value=""; $err.textContent=""; setTimeout(()=>$pass.focus(),50); }
+function intentarEntrar(){
+  if(hashPass($pass.value)===hashActual()){ try{ sessionStorage.setItem("mvAdminAuth","1"); }catch(e){} mostrarPanel(); }
+  else { $err.textContent="Contraseña incorrecta"; $pass.value=""; $pass.focus(); }
+}
+document.getElementById("btnEntrar").addEventListener("click", intentarEntrar);
+$pass.addEventListener("keydown", e=>{ if(e.key==="Enter") intentarEntrar(); });
+document.getElementById("btnSalir").addEventListener("click", ()=>{ try{ sessionStorage.removeItem("mvAdminAuth"); }catch(e){} mostrarLock(); });
+document.getElementById("btnPass").addEventListener("click", ()=>{
+  const n1=prompt("Nueva contraseña:"); if(n1===null||n1.trim()==="") return;
+  const n2=prompt("Repite la nueva contraseña:"); if(n1!==n2){ alert("No coinciden. No se cambió."); return; }
+  try{ localStorage.setItem("mvAdminHash", hashPass(n1.trim())); }catch(e){}
+  alert("Contraseña actualizada en este navegador.");
+});
+let auth=false; try{ auth=sessionStorage.getItem("mvAdminAuth")==="1"; }catch(e){}
+if(auth){ mostrarPanel(); } else { mostrarLock(); }
 </script>
 </body>
 </html>
