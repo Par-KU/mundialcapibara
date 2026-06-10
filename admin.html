@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · Marcador de Ventas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --negro:#0a0a12; --panel:#12121f; --panel2:#1a1a2e;
+    --oro:#ffd43b; --rojo:#e8413f; --azul:#3b82f6; --verde:#2f9e44; --texto:#f1f3f5;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{
+    background:var(--negro); color:var(--texto);
+    font-family:'Press Start 2P', monospace; -webkit-font-smoothing:none; image-rendering:pixelated;
+  }
+  body{ padding:18px 12px 60px; background:radial-gradient(circle at 50% -10%, #1b1b33 0%, var(--negro) 60%); min-height:100vh; }
+
+  .cont{ max-width:720px; margin:0 auto; }
+  .titulo{ text-align:center; color:var(--oro); font-size:clamp(13px,3vw,20px); line-height:1.5;
+    text-shadow:3px 3px 0 var(--rojo), -1px -1px 0 #000; margin-bottom:6px; }
+  .subt{ text-align:center; font-size:7px; color:#6c757d; letter-spacing:1px; margin-bottom:18px; }
+
+  .barra{ display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:18px; }
+  button.pix, a.pix{
+    font-family:'Press Start 2P',monospace; font-size:7px; color:#fff; text-decoration:none;
+    border:none; cursor:pointer; padding:10px 11px; box-shadow:0 4px 0 rgba(0,0,0,.6);
+    transition:transform .05s, box-shadow .05s; display:inline-block;
+  }
+  button.pix:active{ transform:translateY(3px); box-shadow:0 1px 0 rgba(0,0,0,.6); }
+  .b-add{ background:var(--verde); } .b-add:hover{ background:#37b24d; }
+  .b-tablero{ background:#34406b; }
+  .b-cero{ background:#7a5d18; }
+  .b-borrar{ background:#862e2e; }
+
+  .ag{ background:var(--panel2); border:2px solid #2a2a44; padding:12px; margin-bottom:10px; }
+  .ag .fila1{ display:flex; align-items:center; gap:8px; }
+  .ag .idx{ font-size:13px; color:var(--oro); min-width:26px; text-align:center; }
+  input.pix{
+    font-family:'Press Start 2P',monospace; font-size:8px; color:#fff; background:#0d0d18;
+    border:2px solid #2a2a44; padding:8px; width:100%;
+  }
+  input.pix:focus{ border-color:var(--azul); outline:none; }
+  .nombre{ flex:1; }
+  .del{ background:#5a2a2a; color:#fff; border:none; cursor:pointer; font-family:'Press Start 2P',monospace;
+    font-size:9px; padding:8px 10px; box-shadow:0 3px 0 rgba(0,0,0,.6); }
+  .del:active{ transform:translateY(3px); box-shadow:0 1px 0 rgba(0,0,0,.6); }
+
+  .fila2{ display:flex; align-items:center; gap:10px; margin-top:10px; flex-wrap:wrap; }
+  .puntaje{ display:flex; align-items:center; gap:6px; }
+  .puntaje .et{ font-size:7px; color:#868e96; }
+  .pn{ font-family:'Press Start 2P',monospace; font-size:8px; color:var(--oro); background:#0d0d18;
+    border:2px solid #2a2a44; padding:8px; width:64px; text-align:center; }
+  .mas{ background:var(--verde); } .menos{ background:#495057; }
+  .btn-mini{ font-family:'Press Start 2P',monospace; font-size:9px; color:#fff; border:none; cursor:pointer;
+    padding:8px 11px; box-shadow:0 3px 0 rgba(0,0,0,.6); }
+  .btn-mini:active{ transform:translateY(3px); box-shadow:0 1px 0 rgba(0,0,0,.6); }
+
+  .fila3{ margin-top:10px; }
+  .fila3 .et{ font-size:7px; color:#868e96; display:block; margin-bottom:5px; }
+
+  .nota{ background:var(--panel); border:2px solid #2a2a44; padding:12px; font-size:7px; color:#adb5bd;
+    line-height:1.9; margin-top:20px; }
+  .nota b{ color:var(--oro); }
+  .guardado{ position:fixed; bottom:14px; left:50%; transform:translateX(-50%);
+    background:var(--verde); color:#fff; font-size:8px; padding:9px 14px; box-shadow:0 4px 0 rgba(0,0,0,.6);
+    opacity:0; transition:opacity .2s; pointer-events:none; }
+  .guardado.ver{ opacity:1; }
+</style>
+</head>
+<body>
+<div class="cont">
+  <div class="titulo">⚙ PANEL DE ADMIN</div>
+  <div class="subt">GESTIONA PUNTAJES · NOMBRES · GIFS · GESTORES</div>
+
+  <div class="barra">
+    <button class="pix b-add" id="btnAdd">+ AGREGAR GESTOR</button>
+    <a class="pix b-tablero" href="index.html" target="_blank" rel="noopener">📺 ABRIR TABLERO</a>
+    <button class="pix b-cero" id="btnCero">⟲ PUNTAJES A 0</button>
+    <button class="pix b-borrar" id="btnBorrar">🗑 RESETEAR TODO</button>
+  </div>
+
+  <div id="listaAdmin"></div>
+
+  <div class="nota">
+    <b>¿Cómo se usa?</b><br>
+    1) Abre <b>📺 ABRIR TABLERO</b> en otra pestaña (o pantalla del mismo equipo).<br>
+    2) Cada <b>+ VENTA</b> aquí actualiza el tablero al instante y dispara el <b>¡GOOOL!</b>.<br>
+    3) En <b>GIF</b> pega la URL de tu personaje animado; aparecerá sobre el campo.<br>
+    <br>Nota: la sincronización en vivo funciona entre pestañas del <b>mismo navegador</b>. Para controlar desde otro celular/dispositivo en tiempo real, el siguiente paso sería conectarlo a Firebase.
+  </div>
+</div>
+
+<div class="guardado" id="toast">GUARDADO ✓</div>
+
+<script>
+/* ================= CAPA DE DATOS (igual que index.html) ================= */
+const CLAVE = "marcadorVentas_v3";
+function dbDefault(){
+  const e={ seq:0, gestores:[] };
+  for(let i=1;i<=15;i++){ e.seq++; e.gestores.push({ id:e.seq, nombre:"Gestor "+i, goles:0, gif:"" }); }
+  return e;
+}
+function dbCargar(){
+  let e=null;
+  try{ const raw=localStorage.getItem(CLAVE); if(raw) e=JSON.parse(raw); }catch(err){}
+  if(!e || !Array.isArray(e.gestores) || !e.gestores.length) e=dbDefault();
+  if(typeof e.seq!=="number") e.seq=e.gestores.reduce((m,g)=>Math.max(m,g.id||0),0);
+  e.gestores.forEach(g=>{ if(typeof g.goles!=="number")g.goles=0; if(typeof g.gif!=="string")g.gif=""; if(typeof g.nombre!=="string")g.nombre="Gestor"; });
+  return e;
+}
+function dbGuardar(e){ try{ localStorage.setItem(CLAVE, JSON.stringify(e)); }catch(err){} toast(); }
+
+/* ================= ESTADO / RENDER ================= */
+let estado = dbCargar();
+const $lista = document.getElementById("listaAdmin");
+const $toast = document.getElementById("toast");
+
+function esc(t){ return String(t).replace(/[&<>"]/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
+
+function render(){
+  $lista.innerHTML = estado.gestores.map((g,i)=>`
+    <div class="ag" data-id="${g.id}">
+      <div class="fila1">
+        <span class="idx">${i+1}</span>
+        <input class="pix nombre" type="text" value="${esc(g.nombre)}" data-campo="nombre" maxlength="24" placeholder="Nombre del gestor">
+        <button class="del" data-accion="del" title="Eliminar">✕</button>
+      </div>
+      <div class="fila2">
+        <div class="puntaje">
+          <span class="et">VENTAS</span>
+          <button class="btn-mini menos" data-accion="menos">−</button>
+          <input class="pn" type="number" min="0" value="${g.goles}" data-campo="goles">
+          <button class="btn-mini mas" data-accion="mas">+ VENTA</button>
+        </div>
+      </div>
+      <div class="fila3">
+        <span class="et">GIF DEL PERSONAJE (URL, opcional)</span>
+        <input class="pix" type="text" value="${esc(g.gif)}" data-campo="gif" placeholder="https://...tu-personaje.gif">
+      </div>
+    </div>
+  `).join("");
+}
+
+function porId(id){ return estado.gestores.find(g=>g.id===id); }
+
+/* ================= EVENTOS ================= */
+// Cambios de texto / número (sin re-render para no perder el foco)
+$lista.addEventListener("input", e=>{
+  const card = e.target.closest(".ag"); if(!card) return;
+  const id = +card.dataset.id; const g = porId(id); if(!g) return;
+  const campo = e.target.dataset.campo;
+  if(campo==="nombre"){ g.nombre = e.target.value.slice(0,24); }
+  else if(campo==="gif"){ g.gif = e.target.value.trim(); }
+  else if(campo==="goles"){ g.goles = Math.max(0, parseInt(e.target.value)||0); }
+  dbGuardar(estado);
+});
+
+// Botones + / − / eliminar
+$lista.addEventListener("click", e=>{
+  const btn = e.target.closest("[data-accion]"); if(!btn) return;
+  const card = e.target.closest(".ag"); const id = +card.dataset.id; const g = porId(id); if(!g) return;
+  const acc = btn.dataset.accion;
+  if(acc==="mas"){ g.goles++; card.querySelector('[data-campo="goles"]').value = g.goles; dbGuardar(estado); }
+  else if(acc==="menos"){ if(g.goles>0){ g.goles--; card.querySelector('[data-campo="goles"]').value = g.goles; dbGuardar(estado); } }
+  else if(acc==="del"){
+    if(confirm("¿Eliminar a \""+g.nombre+"\"?")){
+      estado.gestores = estado.gestores.filter(x=>x.id!==id);
+      dbGuardar(estado); render();
+    }
+  }
+});
+
+document.getElementById("btnAdd").addEventListener("click", ()=>{
+  estado.seq++;
+  estado.gestores.push({ id:estado.seq, nombre:"Gestor "+estado.seq, goles:0, gif:"" });
+  dbGuardar(estado); render();
+  window.scrollTo({ top: document.body.scrollHeight, behavior:"smooth" });
+});
+
+document.getElementById("btnCero").addEventListener("click", ()=>{
+  if(confirm("¿Poner todos los puntajes en 0? (los nombres se conservan)")){
+    estado.gestores.forEach(g=>g.goles=0); dbGuardar(estado); render();
+  }
+});
+
+document.getElementById("btnBorrar").addEventListener("click", ()=>{
+  if(confirm("¿Borrar todo y volver a 15 gestores en blanco?")){
+    estado = dbDefault(); dbGuardar(estado); render();
+  }
+});
+
+let tToast=null;
+function toast(){
+  $toast.classList.add("ver");
+  clearTimeout(tToast);
+  tToast = setTimeout(()=> $toast.classList.remove("ver"), 900);
+}
+
+// Si se edita en otra pestaña, refrescamos
+window.addEventListener("storage", e=>{ if(e.key===CLAVE){ estado=dbCargar(); render(); } });
+
+render();
+</script>
+</body>
+</html>
