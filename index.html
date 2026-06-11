@@ -86,6 +86,11 @@
     box-shadow:0 4px 0 rgba(0,0,0,.5); display:flex; align-items:center; justify-content:center;
     color:#fff; overflow:hidden; image-rendering:pixelated; background:#444; font-size:13px; }
   .avatar img{ width:100%; height:100%; object-fit:contain; image-rendering:pixelated; }
+  /* GIF libre: sin recuadro ni fondo, se ve completo, un poco más grande y por encima */
+  .avatar.con-gif{ background:transparent; border:none; box-shadow:none; overflow:visible; }
+  .avatar.con-gif img{ width:132%; height:132%; }
+  .ent.lider .avatar.con-gif{ box-shadow:none; }
+  .ent.lider .avatar.con-gif img{ filter:drop-shadow(0 0 6px var(--oro)); }
   .ent.lider .avatar{ box-shadow:0 0 14px var(--oro), 0 4px 0 rgba(0,0,0,.5); }
   .enombre{ font-size:8px; margin-top:5px; white-space:nowrap;
     text-shadow:1px 1px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000; }
@@ -299,12 +304,14 @@ function render(estado){
     const lider=muestra && maxGoles>0 && g.goles===maxGoles;
     const badge=BADGE[g.rol]?`<div class="badge">${BADGE[g.rol]}</div>`:"";
     const av=g.gif?`<img src="${esc(g.gif)}" alt="">`:iniciales(g.nombre);
+    const avCls = g.gif ? "avatar con-gif" : "avatar";
+    const avSty = g.gif ? "" : `border-color:${col}; background:${col}`;
     return `<div class="ent ${lider?'lider':''}" data-id="${g.id}" style="left:${x}%;top:${y}%;">
       ${lider?'<div class="corona">👑</div>':''}
       ${badge}
-      <div class="avatar" style="border-color:${col}; ${g.gif?'':'background:'+col}">${av}</div>
+      <div class="${avCls}" style="${avSty}">${av}</div>
       <div class="enombre">${esc(g.nombre)}</div>
-      ${muestra?`<div class="emarcador">⚽ ${g.goles}</div>`:''}
+      ${muestra?`<div class="emarcador">${g.goles}</div>`:''}
     </div>`;
   }).join("");
 }
