@@ -88,7 +88,7 @@
   .avatar img{ width:100%; height:100%; object-fit:contain; image-rendering:pixelated; }
   /* GIF libre: sin recuadro ni fondo, se ve completo, un poco más grande y por encima */
   .avatar.con-gif{ background:transparent; border:none; box-shadow:none; overflow:visible; }
-  .avatar.con-gif img{ width:132%; height:132%; }
+  .avatar.con-gif img{ width:200%; height:200%; }
   .ent.lider .avatar.con-gif{ box-shadow:none; }
   .ent.lider .avatar.con-gif img{ filter:drop-shadow(0 0 6px var(--oro)); }
   .ent.lider .avatar{ box-shadow:0 0 14px var(--oro), 0 4px 0 rgba(0,0,0,.5); }
@@ -269,7 +269,7 @@ function calcularPosiciones(lista){
 }
 
 /* ================= RENDER ================= */
-const BADGE={ arbitro:"🟨", tecnico:"👔", camilla:"🩹", banca:"🪑" };
+const BADGE={ arbitro:"", tecnico:"", camilla:"", banca:"" };
 const $ranking=document.getElementById("ranking");
 const $ent=document.getElementById("entidades");
 const $flash=document.getElementById("golFlash");
