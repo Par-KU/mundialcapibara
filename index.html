@@ -61,33 +61,28 @@
   .campo-wrap{ max-width:1100px; margin:0 auto; }
   .campo{ position:relative; width:100%; height:min(66vh, 640px); min-height:360px;
     box-shadow:0 0 0 4px var(--negro), 0 0 0 8px #444;
-    /* franja exterior (banquillo / tierra) */
     background:repeating-linear-gradient(0deg, #243016 0 30px, #2b3a1b 30px 60px);
     overflow:hidden; }
-  /* cancha de césped (anclada abajo; arriba queda el banquillo) */
   .cancha{ position:absolute; bottom:0; left:0; right:0; height:82%;
     border:6px solid var(--lineas);
     background:repeating-linear-gradient(0deg, var(--cesped-a) 0 30px, var(--cesped-b) 30px 60px); }
-  /* mitades por equipo */
   .mitad{ position:absolute; top:0; bottom:0; width:50%; pointer-events:none; }
   .mitad.izq{ left:0; background:rgba(59,130,246,.10); }
   .mitad.der{ right:0; background:rgba(232,65,63,.10); }
   .etq-eq{ position:absolute; bottom:8px; font-size:9px; letter-spacing:2px; opacity:.7; pointer-events:none; }
   .etq-eq.a{ left:14px; color:#9ec5ff; } .etq-eq.b{ right:14px; color:#ffb3b3; }
-  /* marcas */
   .linea-medio{ position:absolute; left:50%; top:0; width:4px; height:100%; background:var(--lineas); transform:translateX(-50%); }
   .circulo{ position:absolute; left:50%; top:50%; width:120px; height:120px; border:4px solid var(--lineas); border-radius:50%; transform:translate(-50%,-50%); }
   .area{ position:absolute; top:50%; transform:translateY(-50%); width:80px; height:170px; border:4px solid var(--lineas); }
   .area.izq{ left:0; border-left:none; } .area.der{ right:0; border-right:none; }
 
-  /* ---------- ENTIDADES (jugadores y roles) ---------- */
+  /* ---------- ENTIDADES ---------- */
   .ent{ position:absolute; transform:translate(-50%,-50%); text-align:center; width:84px; z-index:2; pointer-events:none; user-select:none; }
   .avatar{ width:50px; height:50px; margin:0 auto; border:3px solid #888;
     box-shadow:0 4px 0 rgba(0,0,0,.5); display:flex; align-items:center; justify-content:center;
     color:#fff; overflow:hidden; image-rendering:pixelated; background:#444; font-size:13px;
     position:relative; z-index:1; }
   .avatar img{ width:100%; height:100%; object-fit:contain; image-rendering:pixelated; }
-  /* GIF libre: sin recuadro ni fondo, se ve completo, un poco más grande y por encima */
   .avatar.con-gif{ background:transparent; border:none; box-shadow:none; overflow:visible; }
   .avatar.con-gif img{ width:250%; height:250%; }
   .ent.lider .avatar.con-gif{ box-shadow:none; }
@@ -97,8 +92,7 @@
     text-shadow:1px 1px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000; }
   .emarcador{ font-size:13px; color:var(--oro); margin-top:3px; position:relative; z-index:3; text-shadow:2px 2px 0 #000; }
   .corona{ font-size:14px; line-height:1; margin-bottom:2px; position:relative; z-index:3; }
-  .badge{ position:absolute; top:-4px; right:12px; font-size:15px; line-height:1;
-    filter:drop-shadow(0 1px 0 #000); }
+  .badge{ position:absolute; top:-4px; right:12px; font-size:15px; line-height:1; filter:drop-shadow(0 1px 0 #000); }
 
   /* modo edición */
   .campo.editando{ touch-action:none; }
@@ -120,9 +114,10 @@
     30%{transform:scale(1);} 80%{opacity:1;} 100%{opacity:0; transform:scale(1.05);} }
 
   .pie{ max-width:1100px; margin:12px auto 0; font-size:7px; color:#555; }
+  #nubeEstado{ color:#6c757d; }
+  #nubeEstado.ok{ color:#37b24d; } #nubeEstado.err{ color:var(--rojo); }
 
   /* ====================== RESPONSIVE ====================== */
-  /* Tablet */
   @media (max-width:760px){
     .ranking{ padding:10px; gap:7px; }
     .chip{ font-size:9px; padding:8px 10px; gap:7px; }
@@ -130,27 +125,22 @@
     .chip .nom{ font-size:10px; max-width:120px; }
     .chip .gol{ font-size:14px; }
   }
-  /* Celular */
   @media (max-width:600px){
     body{ padding:12px 8px 24px; }
-    /* header en columna: los botones bajan y no se enciman con el título */
     .cabecera{ flex-direction:column; gap:8px; }
     .acciones-top{ position:static; justify-content:center; }
     .btn-top{ font-size:8px; padding:8px 11px; }
-    /* campo más alto y cómodo (se baja un poco con scroll) */
     .campo{ height:min(72vh, 560px); min-height:440px; }
     .circulo{ width:86px; height:86px; }
     .area{ width:52px; height:120px; }
     .etq-eq{ font-size:8px; bottom:6px; }
     .etq-eq.a{ left:8px; } .etq-eq.b{ right:8px; }
-    /* fichas más pequeñas para que quepan los 7v7 + banca */
     .ent{ width:60px; }
     .avatar{ width:38px; height:38px; border-width:2px; font-size:11px; box-shadow:0 3px 0 rgba(0,0,0,.5); }
     .enombre{ font-size:6px; margin-top:3px; }
     .emarcador{ font-size:10px; margin-top:2px; }
     .corona{ font-size:11px; }
     .badge{ font-size:12px; right:14px; top:-2px; }
-    /* ranking compacto pero legible */
     .ranking{ padding:8px; gap:6px; }
     .chip{ font-size:8px; padding:6px 8px; gap:6px; }
     .chip .pos{ font-size:12px; min-width:18px; }
@@ -158,7 +148,6 @@
     .chip .gol{ font-size:12px; }
     .gol-flash .quien{ font-size:9px; }
   }
-  /* Celular angosto */
   @media (max-width:400px){
     .ent{ width:54px; }
     .avatar{ width:33px; height:33px; }
@@ -191,9 +180,7 @@
         <div class="area izq"></div>
         <div class="area der"></div>
       </div>
-
       <div id="entidades"></div>
-
       <div class="hint">✋ Arrastra a cada jugador a su posición</div>
       <div class="gol-flash" id="golFlash">
         <div class="txt">¡GOOOL!</div>
@@ -202,10 +189,26 @@
     </div>
   </div>
 
-  <div class="pie">EN VIVO · controla puntajes y roles desde ⚙ ADMIN · usa 📍 MOVER para colocar a cada quien · clic para activar sonido</div>
+  <div class="pie"><span id="nubeEstado">☁ conectando…</span> · controla puntajes y roles desde ⚙ ADMIN · usa 📍 MOVER para colocar a cada quien · clic para activar sonido</div>
 
-<script>
-/* ================= CAPA DE DATOS (idéntica en admin.html) ================= */
+<script type="module">
+/* ================= FIREBASE ================= */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAdMlLZtpgspizx7JPQm74LQ7ZniRUFccg",
+  authDomain: "marcador-ventas.firebaseapp.com",
+  projectId: "marcador-ventas",
+  storageBucket: "marcador-ventas.firebasestorage.app",
+  messagingSenderId: "1076919165398",
+  appId: "1:1076919165398:web:6aa54de1bcaaf201be4477"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+const REF = doc(db, "marcador", "estado");
+
+/* ================= DATOS / CACHÉ LOCAL ================= */
 const CLAVE = "marcadorVentas_v3";
 const ROLES = ["jugador","arbitro","tecnico","camilla","banca"];
 
@@ -214,9 +217,7 @@ function dbDefault(){
   for(let i=1;i<=14;i++){ e.seq++; e.gestores.push({ id:e.seq, nombre:"Gestor "+i, goles:0, gif:"", rol:"jugador", equipo:"", x:null, y:null }); }
   return e;
 }
-function dbCargar(){
-  let e=null;
-  try{ const raw=localStorage.getItem(CLAVE); if(raw) e=JSON.parse(raw); }catch(err){}
+function normalizar(e){
   if(!e || !Array.isArray(e.gestores) || !e.gestores.length) e=dbDefault();
   if(typeof e.seq!=="number") e.seq=e.gestores.reduce((m,g)=>Math.max(m,g.id||0),0);
   e.gestores.forEach(g=>{
@@ -228,14 +229,22 @@ function dbCargar(){
     if(typeof g.x!=="number") g.x=null;
     if(typeof g.y!=="number") g.y=null;
   });
-  // Reparte equipos A/B entre los jugadores que aún no tengan equipo (solo si NINGUNO lo tiene)
   const jug=e.gestores.filter(g=>g.rol==="jugador");
   const sin=jug.filter(g=>g.equipo!=="A"&&g.equipo!=="B");
   if(jug.length && sin.length===jug.length){ jug.forEach((g,i)=> g.equipo = i<Math.ceil(jug.length/2)?"A":"B"); }
   e.gestores.forEach(g=>{ if(!["A","B","N"].includes(g.equipo)) g.equipo = g.rol==="jugador"?"A":"N"; });
   return e;
 }
-function dbGuardar(e){ try{ localStorage.setItem(CLAVE, JSON.stringify(e)); }catch(err){} }
+function leerCache(){
+  let e=null;
+  try{ const raw=localStorage.getItem(CLAVE); if(raw) e=JSON.parse(raw); }catch(err){}
+  return normalizar(e);
+}
+function escribirCache(e){ try{ localStorage.setItem(CLAVE, JSON.stringify(e)); }catch(err){} }
+async function nubeGuardar(e){
+  escribirCache(e);
+  try{ await setDoc(REF, e); }catch(err){ console.error("Error al guardar en la nube:", err); }
+}
 
 /* ================= POSICIONES POR DEFECTO ================= */
 function enZona(items, x0,x1, y0,y1, pos, unaFila){
@@ -244,10 +253,7 @@ function enZona(items, x0,x1, y0,y1, pos, unaFila){
   const rows = Math.ceil(n/cols);
   items.forEach((g,i)=>{
     const c=i%cols, r=Math.floor(i/cols);
-    pos[g.id] = {
-      x: x0 + (c+0.5)*(x1-x0)/cols,
-      y: y0 + (r+0.5)*(y1-y0)/rows
-    };
+    pos[g.id] = { x: x0 + (c+0.5)*(x1-x0)/cols, y: y0 + (r+0.5)*(y1-y0)/rows };
   });
 }
 function calcularPosiciones(lista){
@@ -260,14 +266,11 @@ function calcularPosiciones(lista){
     else (g.equipo==="B"?G.jugB:G.jugA).push(g);
   });
   const pos={};
-  // jugadores en el césped (ahora el verde está abajo, así que bajamos el rango Y)
   enZona(G.jugA, 8,44, 30,88, pos);
   enZona(G.jugB, 56,92, 30,88, pos);
-  // banquillo ARRIBA (franja de tierra superior)
   enZona(G.tecnico, 5,15, 6,12, pos, true);
   enZona(G.camilla, 84,96, 6,12, pos, true);
   enZona(G.banca, 30,72, 6,12, pos, true);
-  // árbitro al centro del césped
   G.arbitro.forEach((g,i)=>{ pos[g.id]={x:50, y:56+i*7}; });
   return pos;
 }
@@ -278,6 +281,7 @@ const $ranking=document.getElementById("ranking");
 const $ent=document.getElementById("entidades");
 const $flash=document.getElementById("golFlash");
 const $quien=document.getElementById("golQuien");
+const $nube=document.getElementById("nubeEstado");
 
 function esc(t){ return String(t).replace(/[&<>"]/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
 function iniciales(n){ const p=n.trim().split(/\s+/); return ((p[0]?.[0]||"")+(p[1]?.[0]||"")).toUpperCase()||"?"; }
@@ -289,7 +293,6 @@ function render(estado){
   const comp=lista.filter(compite);
   const maxGoles=Math.max(0, ...comp.map(g=>g.goles));
 
-  // ranking (ordenado por ventas; sin árbitro ni técnico)
   const orden=[...comp].sort((a,b)=> b.goles-a.goles || a.id-b.id);
   $ranking.innerHTML = orden.map((g,i)=>{
     const cls=i===0?"t1":i===1?"t2":i===2?"t3":"";
@@ -298,7 +301,6 @@ function render(estado){
       <span class="nom">${esc(g.nombre)}</span><span class="gol">${g.goles}</span></div>`;
   }).join("");
 
-  // entidades en el campo
   const def=calcularPosiciones(lista);
   $ent.innerHTML = lista.map(g=>{
     const x=(typeof g.x==="number")?g.x:(def[g.id]?def[g.id].x:50);
@@ -320,12 +322,12 @@ function render(estado){
   }).join("");
 }
 
-/* ================= SYNC EN VIVO ================= */
-let prevGoles={};
+/* ================= ESTADO + TIEMPO REAL ================= */
+let estado = leerCache();
+let prevGoles = {};
 function snapshot(e){ const m={}; e.gestores.forEach(g=>m[g.id]=g.goles); return m; }
-function aplicar(detectarGol){
-  if(arrastrando) return;
-  const estado=dbCargar();
+
+function pintar(detectarGol){
   render(estado);
   if(detectarGol){
     let anotador=null;
@@ -334,12 +336,22 @@ function aplicar(detectarGol){
   }
   prevGoles=snapshot(estado);
 }
-window.addEventListener("storage", e=>{ if(e.key===CLAVE) aplicar(true); });
-document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) aplicar(false); });
-window.addEventListener("focus", ()=> aplicar(false));
-window.addEventListener("resize", ()=> aplicar(false));
+pintar(false); // primer render instantáneo con caché
 
-/* ================= MODO MOVER (arrastrar y soltar) ================= */
+onSnapshot(REF, (snap)=>{
+  $nube.textContent="☁ EN VIVO"; $nube.className="ok";
+  if(arrastrando) return;            // no re-render mientras arrastro
+  if(snap.exists()){
+    estado = normalizar(snap.data());
+    escribirCache(estado);
+    pintar(true);
+  }
+}, (err)=>{
+  console.error("Firestore:", err);
+  $nube.textContent="⚠ sin conexión a la nube"; $nube.className="err";
+});
+
+/* ================= MODO MOVER ================= */
 const $campo=document.getElementById("campo");
 const $btnMover=document.getElementById("btnMover");
 let editMode=false, arrastrando=false, drag=null;
@@ -350,7 +362,6 @@ $btnMover.addEventListener("click", ()=>{
   $btnMover.classList.toggle("on", editMode);
   $btnMover.textContent = editMode ? "✅ LISTO" : "📍 MOVER";
 });
-
 $campo.addEventListener("pointerdown", e=>{
   if(!editMode) return;
   const el=e.target.closest(".ent"); if(!el) return;
@@ -373,9 +384,8 @@ function soltar(){
   if(!drag) return;
   drag.el.classList.remove("agarrado");
   if(drag.x!=null){
-    const estado=dbCargar();
     const g=estado.gestores.find(g=>g.id===drag.id);
-    if(g){ g.x=drag.x; g.y=drag.y; dbGuardar(estado); }
+    if(g){ g.x=drag.x; g.y=drag.y; nubeGuardar(estado); }
   }
   drag=null; arrastrando=false;
 }
@@ -412,9 +422,6 @@ function sonarGol(){
   }catch(e){}
 }
 document.addEventListener("click", ()=>{ const c=audioCtx(); if(c&&c.state==="suspended") c.resume(); });
-
-/* ================= INIT ================= */
-aplicar(false);
 </script>
 </body>
 </html>
