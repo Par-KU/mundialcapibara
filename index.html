@@ -64,15 +64,15 @@
     /* franja exterior (banquillo / tierra) */
     background:repeating-linear-gradient(0deg, #243016 0 30px, #2b3a1b 30px 60px);
     overflow:hidden; }
-  /* cancha de césped (ocupa la parte de arriba; abajo queda el banquillo) */
-  .cancha{ position:absolute; top:0; left:0; right:0; height:82%;
+  /* cancha de césped (anclada abajo; arriba queda el banquillo) */
+  .cancha{ position:absolute; bottom:0; left:0; right:0; height:82%;
     border:6px solid var(--lineas);
     background:repeating-linear-gradient(0deg, var(--cesped-a) 0 30px, var(--cesped-b) 30px 60px); }
   /* mitades por equipo */
   .mitad{ position:absolute; top:0; bottom:0; width:50%; pointer-events:none; }
   .mitad.izq{ left:0; background:rgba(59,130,246,.10); }
   .mitad.der{ right:0; background:rgba(232,65,63,.10); }
-  .etq-eq{ position:absolute; top:8px; font-size:9px; letter-spacing:2px; opacity:.7; pointer-events:none; }
+  .etq-eq{ position:absolute; bottom:8px; font-size:9px; letter-spacing:2px; opacity:.7; pointer-events:none; }
   .etq-eq.a{ left:14px; color:#9ec5ff; } .etq-eq.b{ right:14px; color:#ffb3b3; }
   /* marcas */
   .linea-medio{ position:absolute; left:50%; top:0; width:4px; height:100%; background:var(--lineas); transform:translateX(-50%); }
@@ -84,7 +84,8 @@
   .ent{ position:absolute; transform:translate(-50%,-50%); text-align:center; width:84px; z-index:2; pointer-events:none; user-select:none; }
   .avatar{ width:50px; height:50px; margin:0 auto; border:3px solid #888;
     box-shadow:0 4px 0 rgba(0,0,0,.5); display:flex; align-items:center; justify-content:center;
-    color:#fff; overflow:hidden; image-rendering:pixelated; background:#444; font-size:13px; }
+    color:#fff; overflow:hidden; image-rendering:pixelated; background:#444; font-size:13px;
+    position:relative; z-index:1; }
   .avatar img{ width:100%; height:100%; object-fit:contain; image-rendering:pixelated; }
   /* GIF libre: sin recuadro ni fondo, se ve completo, un poco más grande y por encima */
   .avatar.con-gif{ background:transparent; border:none; box-shadow:none; overflow:visible; }
@@ -92,10 +93,10 @@
   .ent.lider .avatar.con-gif{ box-shadow:none; }
   .ent.lider .avatar.con-gif img{ filter:drop-shadow(0 0 6px var(--oro)); }
   .ent.lider .avatar{ box-shadow:0 0 14px var(--oro), 0 4px 0 rgba(0,0,0,.5); }
-  .enombre{ font-size:8px; margin-top:5px; white-space:nowrap;
+  .enombre{ font-size:8px; margin-top:5px; white-space:nowrap; position:relative; z-index:3;
     text-shadow:1px 1px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000; }
-  .emarcador{ font-size:13px; color:var(--oro); margin-top:3px; text-shadow:2px 2px 0 #000; }
-  .corona{ font-size:14px; line-height:1; margin-bottom:2px; }
+  .emarcador{ font-size:13px; color:var(--oro); margin-top:3px; position:relative; z-index:3; text-shadow:2px 2px 0 #000; }
+  .corona{ font-size:14px; line-height:1; margin-bottom:2px; position:relative; z-index:3; }
   .badge{ position:absolute; top:-4px; right:12px; font-size:15px; line-height:1;
     filter:drop-shadow(0 1px 0 #000); }
 
@@ -140,7 +141,7 @@
     .campo{ height:min(72vh, 560px); min-height:440px; }
     .circulo{ width:86px; height:86px; }
     .area{ width:52px; height:120px; }
-    .etq-eq{ font-size:8px; top:6px; }
+    .etq-eq{ font-size:8px; bottom:6px; }
     .etq-eq.a{ left:8px; } .etq-eq.b{ right:8px; }
     /* fichas más pequeñas para que quepan los 7v7 + banca */
     .ent{ width:60px; }
@@ -259,12 +260,15 @@ function calcularPosiciones(lista){
     else (g.equipo==="B"?G.jugB:G.jugA).push(g);
   });
   const pos={};
-  enZona(G.jugA, 8,44, 14,76, pos);
-  enZona(G.jugB, 56,92, 14,76, pos);
-  enZona(G.tecnico, 5,15, 88,93, pos, true);
-  enZona(G.camilla, 84,96, 88,93, pos, true);
-  enZona(G.banca, 30,72, 88,93, pos, true);
-  G.arbitro.forEach((g,i)=>{ pos[g.id]={x:50, y:38+i*7}; });
+  // jugadores en el césped (ahora el verde está abajo, así que bajamos el rango Y)
+  enZona(G.jugA, 8,44, 30,88, pos);
+  enZona(G.jugB, 56,92, 30,88, pos);
+  // banquillo ARRIBA (franja de tierra superior)
+  enZona(G.tecnico, 5,15, 6,12, pos, true);
+  enZona(G.camilla, 84,96, 6,12, pos, true);
+  enZona(G.banca, 30,72, 6,12, pos, true);
+  // árbitro al centro del césped
+  G.arbitro.forEach((g,i)=>{ pos[g.id]={x:50, y:56+i*7}; });
   return pos;
 }
 
@@ -361,7 +365,7 @@ $campo.addEventListener("pointermove", e=>{
   const r=$campo.getBoundingClientRect();
   let x=((e.clientX-r.left)/r.width)*100;
   let y=((e.clientY-r.top)/r.height)*100;
-  x=Math.max(3,Math.min(97,x)); y=Math.max(5,Math.min(96,y));
+  x=Math.max(3,Math.min(97,x)); y=Math.max(3,Math.min(97,y));
   drag.x=Math.round(x*10)/10; drag.y=Math.round(y*10)/10;
   drag.el.style.left=drag.x+"%"; drag.el.style.top=drag.y+"%";
 });
