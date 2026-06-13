@@ -17,7 +17,9 @@
   .cont{ max-width:720px; margin:0 auto; }
   .titulo{ text-align:center; color:var(--oro); font-size:clamp(13px,3vw,20px); line-height:1.5;
     text-shadow:3px 3px 0 var(--rojo), -1px -1px 0 #000; margin-bottom:6px; }
-  .subt{ text-align:center; font-size:7px; color:#6c757d; letter-spacing:1px; margin-bottom:18px; }
+  .subt{ text-align:center; font-size:7px; color:#6c757d; letter-spacing:1px; margin-bottom:8px; }
+  .nube{ text-align:center; font-size:7px; color:#6c757d; margin-bottom:16px; }
+  .nube.ok{ color:#37b24d; } .nube.err{ color:var(--rojo); }
 
   .barra{ display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:18px; }
   button.pix, a.pix{ font-family:'Press Start 2P',monospace; font-size:7px; color:#fff; text-decoration:none;
@@ -27,6 +29,7 @@
   .b-add{ background:var(--verde); } .b-tablero{ background:#34406b; }
   .b-cero{ background:#7a5d18; } .b-borrar{ background:#862e2e; }
   .b-pass{ background:#2f6b4d; } .b-salir{ background:#444; }
+  .b-subir{ background:#1f6f8b; }
 
   .ag{ background:var(--panel2); border:2px solid #2a2a44; padding:12px; margin-bottom:10px; }
   .ag.eqA{ border-left:6px solid #3b82f6; } .ag.eqB{ border-left:6px solid #e8413f; } .ag.eqN{ border-left:6px solid #ffd43b; }
@@ -74,7 +77,6 @@
   .lock .error{ color:var(--rojo); font-size:7px; min-height:12px; margin-top:12px; }
   .cont.bloqueado{ display:none; }
 
-  /* ====================== RESPONSIVE ====================== */
   @media (max-width:560px){
     body{ padding:14px 8px 60px; }
     .barra{ gap:6px; margin-bottom:14px; }
@@ -107,10 +109,12 @@
 <div class="cont bloqueado" id="panel">
   <div class="titulo">⚙ PANEL DE ADMIN</div>
   <div class="subt">NOMBRE · VENTAS · GIF · ROL · EQUIPO</div>
+  <div class="nube" id="nubeEstado">☁ conectando a la nube…</div>
 
   <div class="barra">
     <button class="pix b-add" id="btnAdd">+ AGREGAR</button>
     <a class="pix b-tablero" href="index.html" target="_blank" rel="noopener">📺 TABLERO</a>
+    <button class="pix b-subir" id="btnSubir">☁ SUBIR A LA NUBE</button>
     <button class="pix b-cero" id="btnCero">⟲ PUNTAJES A 0</button>
     <button class="pix b-borrar" id="btnBorrar">🗑 RESETEAR</button>
     <button class="pix b-pass" id="btnPass">🔑 CLAVE</button>
@@ -120,19 +124,33 @@
   <div id="listaAdmin"></div>
 
   <div class="nota">
-    <b>Tips:</b><br>
-    • <b>Rol</b>: jugador, árbitro 🟨, técnico 👔, en camilla 🩹 o banca 🪑.<br>
-    • <b>Equipo</b>: A (izquierda, azul) / B (derecha, rojo) / Neutral.<br>
-    • Las <b>posiciones</b> se ajustan en el tablero con el botón <b>📍 MOVER</b> (arrastrando).<br>
-    • Árbitro y técnico no entran al ranking de ventas.<br>
-    <br>La sincronización en vivo funciona entre pestañas del <b>mismo navegador</b>. Para otro dispositivo en tiempo real: Firebase.
+    <b>Tiempo real:</b> cada cambio que hagas aquí se guarda en la nube y se ve al instante en todos los que tengan el link. 🌐<br>
+    <b>☁ SUBIR A LA NUBE:</b> sube la formación de ESTE navegador (úsalo una vez, desde tu PC con los datos buenos).<br>
+    • <b>Rol</b>: jugador, árbitro, técnico, en camilla o banca · <b>Equipo</b>: A (azul) / B (rojo) / Neutral.<br>
+    • Las <b>posiciones</b> se ajustan en el tablero con <b>📍 MOVER</b>.
   </div>
 </div>
 
 <div class="guardado" id="toast">GUARDADO ✓</div>
 
-<script>
-/* ================= CAPA DE DATOS (idéntica a index.html) ================= */
+<script type="module">
+/* ================= FIREBASE ================= */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAdMlLZtpgspizx7JPQm74LQ7ZniRUFccg",
+  authDomain: "marcador-ventas.firebaseapp.com",
+  projectId: "marcador-ventas",
+  storageBucket: "marcador-ventas.firebasestorage.app",
+  messagingSenderId: "1076919165398",
+  appId: "1:1076919165398:web:6aa54de1bcaaf201be4477"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+const REF = doc(db, "marcador", "estado");
+
+/* ================= DATOS / CACHÉ ================= */
 const CLAVE = "marcadorVentas_v3";
 const ROLES = ["jugador","arbitro","tecnico","camilla","banca"];
 function dbDefault(){
@@ -140,9 +158,7 @@ function dbDefault(){
   for(let i=1;i<=14;i++){ e.seq++; e.gestores.push({ id:e.seq, nombre:"Gestor "+i, goles:0, gif:"", rol:"jugador", equipo:"", x:null, y:null }); }
   return e;
 }
-function dbCargar(){
-  let e=null;
-  try{ const raw=localStorage.getItem(CLAVE); if(raw) e=JSON.parse(raw); }catch(err){}
+function normalizar(e){
   if(!e || !Array.isArray(e.gestores) || !e.gestores.length) e=dbDefault();
   if(typeof e.seq!=="number") e.seq=e.gestores.reduce((m,g)=>Math.max(m,g.id||0),0);
   e.gestores.forEach(g=>{
@@ -160,14 +176,21 @@ function dbCargar(){
   e.gestores.forEach(g=>{ if(!["A","B","N"].includes(g.equipo)) g.equipo = g.rol==="jugador"?"A":"N"; });
   return e;
 }
-function dbGuardar(e){ try{ localStorage.setItem(CLAVE, JSON.stringify(e)); }catch(err){} toast(); }
+function leerCache(){ let e=null; try{ const raw=localStorage.getItem(CLAVE); if(raw) e=JSON.parse(raw); }catch(err){} return normalizar(e); }
+function escribirCache(e){ try{ localStorage.setItem(CLAVE, JSON.stringify(e)); }catch(err){} }
+function guardar(e){
+  escribirCache(e); toast();
+  setDoc(REF, e).catch(err=>{ console.error("Error al guardar en la nube:", err); });
+}
 
 /* ================= ESTADO / RENDER ================= */
-let estado = dbCargar();
+let estado = leerCache();
+let pendiente = null;
 const $lista=document.getElementById("listaAdmin");
 const $toast=document.getElementById("toast");
+const $nube=document.getElementById("nubeEstado");
 function esc(t){ return String(t).replace(/[&<>"]/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
-function selRol(r){ const o=[["jugador","Jugador"],["arbitro","Árbitro 🟨"],["tecnico","Técnico 👔"],["camilla","Camilla 🩹"],["banca","Banca 🪑"]];
+function selRol(r){ const o=[["jugador","Jugador"],["arbitro","Árbitro"],["tecnico","Técnico"],["camilla","Camilla"],["banca","Banca"]];
   return o.map(([v,t])=>`<option value="${v}" ${r===v?"selected":""}>${t}</option>`).join(""); }
 function selEq(e){ const o=[["A","Equipo A"],["B","Equipo B"],["N","Neutral"]];
   return o.map(([v,t])=>`<option value="${v}" ${e===v?"selected":""}>${t}</option>`).join(""); }
@@ -194,7 +217,7 @@ function render(){
       </div>
       <div class="fila3">
         <span class="et">GIF DEL PERSONAJE (URL, opcional)</span>
-        <input class="pix" type="text" value="${esc(g.gif)}" data-campo="gif" placeholder="https://...tu-personaje.gif">
+        <input class="pix" type="text" value="${esc(g.gif)}" data-campo="gif" placeholder="assets/personaje.gif">
       </div>
     </div>`).join("");
 }
@@ -211,7 +234,7 @@ function aplicarCambio(e){
   else if(campo==="rol"){ g.rol=e.target.value; card.className="ag eq"+g.equipo; }
   else if(campo==="equipo"){ g.equipo=e.target.value; card.className="ag eq"+g.equipo; }
   else return;
-  dbGuardar(estado);
+  guardar(estado);
 }
 $lista.addEventListener("input", aplicarCambio);
 $lista.addEventListener("change", aplicarCambio);
@@ -220,11 +243,11 @@ $lista.addEventListener("click", e=>{
   const btn=e.target.closest("[data-accion]"); if(!btn) return;
   const card=e.target.closest(".ag"); const g=porId(+card.dataset.id); if(!g) return;
   const acc=btn.dataset.accion;
-  if(acc==="mas"){ g.goles++; card.querySelector('[data-campo="goles"]').value=g.goles; dbGuardar(estado); }
-  else if(acc==="menos"){ if(g.goles>0){ g.goles--; card.querySelector('[data-campo="goles"]').value=g.goles; dbGuardar(estado); } }
+  if(acc==="mas"){ g.goles++; card.querySelector('[data-campo="goles"]').value=g.goles; guardar(estado); }
+  else if(acc==="menos"){ if(g.goles>0){ g.goles--; card.querySelector('[data-campo="goles"]').value=g.goles; guardar(estado); } }
   else if(acc==="del"){
     if(confirm("¿Eliminar a \""+g.nombre+"\"?")){
-      estado.gestores=estado.gestores.filter(x=>x.id!==g.id); dbGuardar(estado); render();
+      estado.gestores=estado.gestores.filter(x=>x.id!==g.id); guardar(estado); render();
     }
   }
 });
@@ -232,28 +255,52 @@ $lista.addEventListener("click", e=>{
 document.getElementById("btnAdd").addEventListener("click", ()=>{
   estado.seq++;
   estado.gestores.push({ id:estado.seq, nombre:"Gestor "+estado.seq, goles:0, gif:"", rol:"jugador", equipo:"A", x:null, y:null });
-  dbGuardar(estado); render();
+  guardar(estado); render();
   window.scrollTo({ top:document.body.scrollHeight, behavior:"smooth" });
 });
 document.getElementById("btnCero").addEventListener("click", ()=>{
   if(confirm("¿Poner todos los puntajes en 0? (los nombres se conservan)")){
-    estado.gestores.forEach(g=>g.goles=0); dbGuardar(estado); render();
+    estado.gestores.forEach(g=>g.goles=0); guardar(estado); render();
   }
 });
 document.getElementById("btnBorrar").addEventListener("click", ()=>{
   if(confirm("¿Borrar todo y volver a 14 jugadores en blanco?")){
-    estado=dbDefault(); dbGuardar(estado); render();
+    estado=dbDefault(); guardar(estado); render();
   }
+});
+document.getElementById("btnSubir").addEventListener("click", ()=>{
+  if(!confirm("Esto sube la formación de ESTE navegador a la nube y reemplaza lo que haya.\n\nHazlo SOLO desde tu PC con los datos buenos, y una sola vez. ¿Continuar?")) return;
+  const local = leerCache();
+  estado = local;
+  guardar(local); render();
+  alert("✅ Formación subida a la nube. Ya todos verán esta versión en vivo.");
 });
 
 let tToast=null;
 function toast(){ $toast.classList.add("ver"); clearTimeout(tToast); tToast=setTimeout(()=>$toast.classList.remove("ver"),900); }
-window.addEventListener("storage", e=>{ if(e.key===CLAVE){ estado=dbCargar(); render(); } });
+
+/* ================= TIEMPO REAL (sin pisar lo que escribes) ================= */
+function estaEditando(){ const ae=document.activeElement; return ae && (ae.tagName==="INPUT"||ae.tagName==="SELECT") && ae.closest && ae.closest("#listaAdmin"); }
+onSnapshot(REF, (snap)=>{
+  $nube.textContent="☁ conectado · en vivo"; $nube.className="nube ok";
+  if(!snap.exists()) return;
+  const data = normalizar(snap.data());
+  if(estaEditando()){ pendiente = data; }
+  else { estado = data; render(); }
+}, (err)=>{
+  console.error("Firestore:", err);
+  $nube.textContent="⚠ sin conexión a la nube (revisa las Reglas)"; $nube.className="nube err";
+});
+document.addEventListener("focusout", (e)=>{
+  if(e.target.closest && e.target.closest("#listaAdmin")){
+    setTimeout(()=>{ if(!estaEditando() && pendiente){ estado=pendiente; pendiente=null; render(); } }, 120);
+  }
+});
+
 render();
 
 /* ================= CONTRASEÑA ================= */
-/* Hash simple (para no dejar la clave en texto plano). Por defecto "parku2026".
-   Cámbiala con 🔑 CLAVE. */
+/* Hash simple (para no dejar la clave en texto plano). Por defecto "parku2026". Cámbiala con 🔑 CLAVE. */
 const HASH_DEFECTO="i7tv32";
 function hashPass(s){ let h=5381; for(let i=0;i<s.length;i++){ h=(((h<<5)+h) ^ s.charCodeAt(i))>>>0; } return h.toString(36); }
 function hashActual(){ return localStorage.getItem("mvAdminHash") || HASH_DEFECTO; }
